@@ -15,15 +15,25 @@ function inicializarAplicacao() {
 // ===== NAVEGAÇÃO E ROTEAMENTO =====
 function configurarNavegacao() {
     // Navegação do menu inferior
-    const menuItems = document.querySelectorAll('.menu-item, .bottom-nav a, .carrinho');
+    const menuItems = document.querySelectorAll('.menu-item, .bottom-nav a, .catalogo');
     
-    menuItems.forEach(item => {
-        item.addEventListener('click', function(e) {
-            e.preventDefault();
-            const texto = this.querySelector('span')?.textContent || '';
-            navegarPara(texto);
-        });
+menuItems.forEach(item => {
+    item.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // Primeiro tenta pegar data-page
+        let destino = this.dataset.page;
+
+        // Se não existir, pega o texto do span
+        if (!destino) {
+            const span = this.querySelector('span');
+            destino = span ? span.textContent.trim() : '';
+        }
+
+        // Navega para o destino
+        navegarPara(destino);
     });
+});
 
     // Botão de voltar no chat
     const backBtn = document.querySelector('.back-btn');
@@ -55,20 +65,18 @@ function navegarPara(destino) {
         'Home': 'home2.html',
         'Pesquisar': 'pesquisa.html',
         'Favoritos': 'favoritos.html',
-        'Perfil': 'perfil.html'
+        'Perfil': 'perfil.html',
+        'Catálogo': 'catalogo.html'
     };
 
-    if (rotas[destino]) {
-        window.location.href = rotas[destino];
-    } else if (destino === '') {
-        // Carrinho - comportamento especial
-        abrirCarrinho();
-    }
-}
+    // Normaliza o destino (remove espaços extras e capitaliza primeira letra)
+    const destinoNormalizado = destino.trim();
 
-function abrirCarrinho() {
-    alert('Carrinho aberto!'); // Substituir por modal real do carrinho
-    // Exemplo: mostrarModalCarrinho();
+    if (rotas[destinoNormalizado]) {
+        window.location.href = rotas[destinoNormalizado];
+    } else {
+        console.warn('Rota não encontrada:', destinoNormalizado);
+    }
 }
 
 // ===== FUNCIONALIDADES DO CHAT =====
@@ -205,50 +213,24 @@ function loginTelefone() {
 
 // ===== INTERAÇÕES GERAIS =====
 function configurarInteracoes() {
-    // Favoritar produtos
-    const botoesFavorito = document.querySelectorAll('.fa-heart');
-    botoesFavorito.forEach(btn => {
-        btn.addEventListener('click', function() {
-            this.classList.toggle('active');
-            this.style.color = this.classList.contains('active') ? 'red' : '';
-        });
+  // Favoritar produtos
+  const botoesFavorito = document.querySelectorAll('.fa-heart');
+  botoesFavorito.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      this.classList.toggle('active');
+      this.style.color = this.classList.contains('active') ? 'red' : '';
     });
+  });
 
-    // Adicionar ao carrinho
-    const cardsProduto = document.querySelectorAll('.card');
-    cardsProduto.forEach(card => {
-        card.addEventListener('click', function(e) {
-            if (!e.target.closest('.fa-heart')) {
-                const nome = this.querySelector('.nome').textContent;
-                const preco = this.querySelector('.preco').textContent;
-                adicionarAoCarrinho(nome, preco);
-            }
-        });
+  // Abrir detalhes do produto
+  const cardsProduto = document.querySelectorAll('.card');
+  cardsProduto.forEach(card => {
+    card.addEventListener('click', function() {
+      const produtoId = this.dataset.id || this.querySelector('.nome').textContent;
+      window.location.href = `detalhes.html?id=${encodeURIComponent(produtoId)}`;
     });
-}
-
-function adicionarAoCarrinho(nome, preco) {
-    console.log('Produto adicionado ao carrinho:', nome, preco);
-    
-    // Feedback visual
-    const feedback = document.createElement('div');
-    feedback.textContent = `${nome} adicionado ao carrinho!`;
-    feedback.style.cssText = `
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #4CAF50;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        z-index: 1000;
-    `;
-    document.body.appendChild(feedback);
-    
-    setTimeout(() => {
-        feedback.remove();
-    }, 2000);
+  });
 }
 
 // ===== UTILITÁRIOS =====

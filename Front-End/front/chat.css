@@ -131,3 +131,58 @@ body {
   font-size: 22px;
 }
 
+.chat-container {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: calc(100vh - 160px); /* ajusta para caber entre header + input + nav */
+  overflow-y: auto;
+}
+
+/* Mensagem base */
+.mensagem {
+  max-width: 70%;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Balões */
+.bubble {
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+/* Usuário (lado direito) */
+.mensagem.me {
+  align-self: flex-end;
+}
+
+.mensagem.me .bubble {
+  background: #2E7D32;
+  color: white;
+  border-bottom-right-radius: 0;
+}
+
+/* Agricultor/Outro (lado esquerdo) */
+.mensagem.other {
+  align-self: flex-start;
+}
+
+.mensagem.other .bubble {
+  background: #e5e5ea;
+  color: #000;
+  border-bottom-left-radius: 0;
+}
+
+/* Hora da mensagem */
+.hora {
+  font-size: 11px;
+  color: #555;
+  margin-top: 3px;
+  align-self: flex-end;
+}
