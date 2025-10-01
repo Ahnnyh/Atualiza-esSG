@@ -1,257 +1,327 @@
-// main.js - Arquivo principal JavaScript para SafraGo
+// filtros.js - Funcionalidades para o catálogo de produtos - Nova Paleta
+class CatalogoManager {
+    constructor() {
+        this.products = [];
+        this.currentFilter = 'all';
+        this.searchTerm = '';
+        this.init();
+    }
 
-// Esperar o DOM carregar completamente
-document.addEventListener('DOMContentLoaded', function() {
-    inicializarAplicacao();
-});
+    init() {
+        this.cacheElements();
+        this.bindEvents();
+        this.cacheProducts();
+        this.updateProductCount();
+    }
 
-function inicializarAplicacao() {
-    configurarNavegacao();
-    configurarChat();
-    configurarLogin();
-    configurarInteracoes();
-}
+    cacheElements() {
+        this.elements = {
+            filterBtns: document.querySelectorAll('.filter-btn'),
+            searchInput: document.getElementById('searchInput'),
+            productList: document.getElementById('productList'),
+            productCards: document.querySelectorAll('.product-card'),
+            emptyState: document.getElementById('emptyState'),
+            sortSelect: document.getElementById('sortSelect')
+        };
+    }
 
-// ===== NAVEGAÇÃO E ROTEAMENTO =====
-function configurarNavegacao() {
-    // Navegação do menu inferior
-    const menuItems = document.querySelectorAll('.menu-item, .bottom-nav a, .catalogo');
-    
-menuItems.forEach(item => {
-    item.addEventListener('click', function(e) {
-        e.preventDefault();
+    cacheProducts() {
+        this.products = Array.from(this.elements.productCards).map(card => ({
+            element: card,
+            name: card.querySelector('h3').textContent.toLowerCase(),
+            category: card.dataset.category,
+            producer: card.querySelector('.producer').textContent.toLowerCase(),
+            price: this.extractPrice(card)
+        }));
+    }
 
-        // Primeiro tenta pegar data-page
-        let destino = this.dataset.page;
+    extractPrice(card) {
+        const priceText = card.querySelector('.packaging-price')?.textContent || '';
+        const priceMatch = priceText.match(/R\$\s*([\d.,]+)/);
+        return priceMatch ? parseFloat(priceMatch[1].replace('.', '').replace(',', '.')) : 0;
+    }
 
-        // Se não existir, pega o texto do span
-        if (!destino) {
-            const span = this.querySelector('span');
-            destino = span ? span.textContent.trim() : '';
+    bindEvents() {
+        // Filtros
+        this.elements.filterBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => this.handleFilterClick(e));
+        });
+
+        // Busca com debounce
+        this.elements.searchInput.addEventListener('input', 
+            debounce((e) => {
+                this.searchTerm = e.target.value.toLowerCase().trim();
+                this.applyFilters();
+            }, 300)
+        );
+
+        // Ordenação
+        if (this.elements.sortSelect) {
+            this.elements.sortSelect.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    this.sortProducts(e.target.value);
+                }
+            });
         }
 
-        // Navega para o destino
-        navegarPara(destino);
-    });
-});
-
-    // Botão de voltar no chat
-    const backBtn = document.querySelector('.back-btn');
-    if (backBtn) {
-        backBtn.addEventListener('click', function() {
-            window.history.back();
-        });
-    }
-
-    // Botão do chat na home
-    const chatBtn = document.querySelector('.chat-btn');
-    if (chatBtn) {
-        chatBtn.addEventListener('click', function() {
-            window.location.href = 'chat.html';
-        });
-    }
-
-    // Menu hamburguer
-    const menuBtn = document.querySelector('.menu-btn');
-    if (menuBtn) {
-        menuBtn.addEventListener('click', function() {
-            alert('Menu aberto!'); // Pode ser substituído por um drawer/sidebar real
-        });
-    }
-}
-
-function navegarPara(destino) {
-    const rotas = {
-        'Home': 'home2.html',
-        'Pesquisar': 'pesquisa.html',
-        'Favoritos': 'favoritos.html',
-        'Perfil': 'perfil.html',
-        'Catálogo': 'catalogo.html'
-    };
-
-    // Normaliza o destino (remove espaços extras e capitaliza primeira letra)
-    const destinoNormalizado = destino.trim();
-
-    if (rotas[destinoNormalizado]) {
-        window.location.href = rotas[destinoNormalizado];
-    } else {
-        console.warn('Rota não encontrada:', destinoNormalizado);
-    }
-}
-
-// ===== FUNCIONALIDADES DO CHAT =====
-function configurarChat() {
-    const chatInput = document.querySelector('.chat-input input');
-    const sendBtn = document.querySelector('.send-btn');
-
-    if (sendBtn && chatInput) {
-        sendBtn.addEventListener('click', enviarMensagem);
-        chatInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                enviarMensagem();
+        // Botões de interesse
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn-interesse')) {
+                this.handleInteresseClick(e);
             }
         });
+
+        // Load mais produtos (simulação)
+        window.addEventListener('scroll', () => this.handleScroll());
     }
 
-    // Carregar histórico salvo no localStorage
-    carregarHistoricoChat();
+    handleFilterClick(e) {
+        const btn = e.currentTarget;
+        const filter = btn.dataset.filter;
 
-    // Se for a primeira vez, mostra mensagem de boas-vindas
-    if (!localStorage.getItem('chatIniciado')) {
+        // Atualizar botões ativos
+        this.elements.filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        this.currentFilter = filter;
+        this.applyFilters();
+    }
+
+    applyFilters() {
+        let visibleCount = 0;
+
+        this.products.forEach(product => {
+            const matchesFilter = this.currentFilter === 'all' || 
+                                product.category === this.currentFilter ||
+                                (this.currentFilter === 'ofertas' && this.isOferta(product));
+
+            const matchesSearch = !this.searchTerm || 
+                                product.name.includes(this.searchTerm) ||
+                                product.producer.includes(this.searchTerm);
+
+            const shouldShow = matchesFilter && matchesSearch;
+
+            product.element.style.display = shouldShow ? 'block' : 'none';
+            
+            if (shouldShow) {
+                visibleCount++;
+                this.animateProduct(product.element);
+            }
+        });
+
+        this.toggleEmptyState(visibleCount === 0);
+        this.updateProductCount(visibleCount);
+    }
+
+    isOferta(product) {
+        // Produtos com preço abaixo de 100 são considerados ofertas
+        return product.price > 0 && product.price < 100;
+    }
+
+    animateProduct(element) {
+        element.style.animation = 'none';
         setTimeout(() => {
-            adicionarMensagem('Olá! Como posso ajudar você hoje?', 'other');
-            salvarMensagem('Olá! Como posso ajudar você hoje?', 'other');
-            localStorage.setItem('chatIniciado', 'true');
-        }, 500);
+            element.style.animation = 'fadeIn 0.6s ease forwards';
+        }, 10);
+    }
+
+    toggleEmptyState(show) {
+        if (this.elements.emptyState) {
+            this.elements.emptyState.style.display = show ? 'block' : 'none';
+            this.elements.productList.style.display = show ? 'none' : 'grid';
+        }
+    }
+
+    updateProductCount(count) {
+        const total = count || this.products.length;
+        const banner = document.querySelector('.banner-text');
+        if (banner) {
+            banner.textContent = `Catálogo Completo (${total} produtos)`;
+        }
+    }
+
+    sortProducts(criteria) {
+        const sortedProducts = [...this.products].sort((a, b) => {
+            switch (criteria) {
+                case 'price-asc':
+                    return a.price - b.price;
+                case 'price-desc':
+                    return b.price - a.price;
+                case 'name':
+                    return a.name.localeCompare(b.name);
+                default:
+                    return 0;
+            }
+        });
+
+        // Reordenar no DOM
+        const container = this.elements.productList;
+        sortedProducts.forEach(product => {
+            container.appendChild(product.element);
+        });
+
+        // Reaplicar animação
+        sortedProducts.forEach((product, index) => {
+            setTimeout(() => {
+                this.animateProduct(product.element);
+            }, index * 50);
+        });
+    }
+
+    handleInteresseClick(e) {
+        e.preventDefault();
+        const productCard = e.target.closest('.product-card');
+        const productName = productCard.querySelector('h3').textContent;
+        
+        this.showInteresseModal(productName);
+    }
+
+    showInteresseModal(productName) {
+        // Criar modal de confirmação
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(64, 29, 4, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        `;
+
+        modal.innerHTML = `
+            <div style="
+                background: #F5FCF8;
+                padding: 30px;
+                border-radius: 16px;
+                text-align: center;
+                max-width: 400px;
+                width: 90%;
+                box-shadow: 0 10px 30px rgba(64, 29, 4, 0.3);
+                animation: slideUp 0.3s ease;
+                border: 2px solid #2E7D32;
+            ">
+                <i class="fas fa-check-circle" style="font-size: 48px; color: #2E7D32; margin-bottom: 15px;"></i>
+                <h3 style="margin: 0 0 10px 0; color: #401D04;">Interesse Registrado!</h3>
+                <p style="color: #666; margin-bottom: 20px;">Seu interesse em <strong>${productName}</strong> foi registrado com sucesso. Entraremos em contato em breve.</p>
+                <button onclick="this.closest('[style]').remove()" style="
+                    background: linear-gradient(135deg, #401D04, #2E7D32);
+                    color: #F5FCF8;
+                    border: none;
+                    padding: 12px 30px;
+                    border-radius: 8px;
+                    font-size: 16px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(64, 29, 4, 0.3)'" 
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                    Entendi
+                </button>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Fechar modal ao clicar fora
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+
+        // Adicionar estilo de animação se não existir
+        if (!document.querySelector('#modal-styles')) {
+            const style = document.createElement('style');
+            style.id = 'modal-styles';
+            style.textContent = `
+                @keyframes slideUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(30px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+
+    handleScroll() {
+        // Simulação de carregamento de mais produtos
+        const scrollPosition = window.innerHeight + window.scrollY;
+        const pageHeight = document.documentElement.scrollHeight;
+        
+        if (scrollPosition >= pageHeight - 500 && !this.loadingMore) {
+            this.loadMoreProducts();
+        }
+    }
+
+    loadMoreProducts() {
+        // Simulação - na implementação real, aqui você faria uma requisição AJAX
+        this.loadingMore = true;
+        
+        // Mostrar loading
+        const loadingElement = document.createElement('div');
+        loadingElement.className = 'loading';
+        loadingElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando mais produtos...';
+        this.elements.productList.appendChild(loadingElement);
+        
+        setTimeout(() => {
+            loadingElement.remove();
+            console.log('Carregando mais produtos...');
+            this.loadingMore = false;
+        }, 1000);
     }
 }
 
-function enviarMensagem() {
-    const chatInput = document.querySelector('.chat-input input');
-    if (!chatInput || !chatInput.value.trim()) return;
-
-    const texto = chatInput.value.trim();
-
-    // Mensagem do usuário
-    adicionarMensagem(texto, 'me');
-    salvarMensagem(texto, 'me');
-
-    chatInput.value = '';
-
-    // Resposta simulada do "bot"
-    setTimeout(() => {
-        const resposta = 'Entendi! Vou verificar isso pra você.';
-        adicionarMensagem(resposta, 'other');
-        salvarMensagem(resposta, 'other');
-    }, 800);
-}
-
-function adicionarMensagem(texto, tipo) {
-    const chatContainer = document.querySelector('.chat-container');
-    if (!chatContainer) return;
-
-    const mensagemDiv = document.createElement('div');
-    mensagemDiv.className = `mensagem ${tipo}`;
+// Inicialização quando o DOM estiver carregado
+document.addEventListener('DOMContentLoaded', function() {
+    const catalogoManager = new CatalogoManager();
     
-    const hora = new Date().toLocaleTimeString('pt-BR', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-    });
-    
-    mensagemDiv.innerHTML = `
-        <div class="bubble">${texto}</div>
-        <span class="hora">${hora}</span>
-    `;
-    
-    chatContainer.appendChild(mensagemDiv);
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-}
+    // Expor para uso global se necessário
+    window.catalogoManager = catalogoManager;
+});
 
-// ====== HISTÓRICO DO CHAT ======
-function salvarMensagem(texto, tipo) {
-    const historico = JSON.parse(localStorage.getItem('chatHistorico')) || [];
-    historico.push({ texto, tipo, hora: new Date().toISOString() });
-    localStorage.setItem('chatHistorico', JSON.stringify(historico));
-}
-
-function carregarHistoricoChat() {
-    const historico = JSON.parse(localStorage.getItem('chatHistorico')) || [];
-    historico.forEach(msg => {
-        adicionarMensagem(msg.texto, msg.tipo);
-    });
-}
-
-
-// ===== FUNCIONALIDADES DE LOGIN =====
-function configurarLogin() {
-    const enterBtn = document.querySelector('.enter-btn');
-    const googleBtn = document.querySelector('.google-btn');
-    const phoneBtn = document.querySelector('.phone-btn');
-    
-    if (enterBtn) {
-        enterBtn.addEventListener('click', fazerLogin);
-    }
-    
-    if (googleBtn) {
-        googleBtn.addEventListener('click', loginGoogle);
-    }
-    
-    if (phoneBtn) {
-        phoneBtn.addEventListener('click', loginTelefone);
-    }
-}
-
-function fazerLogin() {
-    const email = document.querySelector('input[type="email"]');
-    const senha = document.querySelector('input[type="password"]');
-    
-    if (!email || !senha) return;
-    
-    if (!email.value || !senha.value) {
-        alert('Por favor, preencha todos os campos.');
-        return;
-    }
-    
-    // Simulação de login
-    console.log('Tentativa de login:', email.value);
-    
-    // Redirecionar para home após "login bem-sucedido"
-    setTimeout(() => {
-        window.location.href = 'home2.html';
-    }, 1000);
-}
-
-function loginGoogle() {
-    alert('Login com Google selecionado');
-    // Implementar autenticação com Google
-}
-
-function loginTelefone() {
-    alert('Login com Telefone selecionado');
-    // Implementar autenticação com telefone
-}
-
-// ===== INTERAÇÕES GERAIS =====
-function configurarInteracoes() {
-  // Favoritar produtos
-  const botoesFavorito = document.querySelectorAll('.fa-heart');
-  botoesFavorito.forEach(btn => {
-    btn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      this.classList.toggle('active');
-      this.style.color = this.classList.contains('active') ? 'red' : '';
-    });
-  });
-
-  // Abrir detalhes do produto
-  const cardsProduto = document.querySelectorAll('.card');
-  cardsProduto.forEach(card => {
-    card.addEventListener('click', function() {
-      const produtoId = this.dataset.id || this.querySelector('.nome').textContent;
-      window.location.href = `detalhes.html?id=${encodeURIComponent(produtoId)}`;
-    });
-  });
-}
-
-// ===== UTILITÁRIOS =====
-function formatarMoeda(valor) {
+// Funções utilitárias globais
+function formatCurrency(value) {
     return new Intl.NumberFormat('pt-BR', {
         style: 'currency',
         currency: 'BRL'
-    }).format(valor);
+    }).format(value);
 }
 
-function mostrarLoading() {
-    // Implementar loading spinner se necessário
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
-function esconderLoading() {
-    // Implementar esconder loading
-}
-
-// Inicializar quando a página carregar
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', inicializarAplicacao);
-} else {
-    inicializarAplicacao();
+// Adicionar ícone de loading se não existir
+if (!document.querySelector('#loading-styles')) {
+    const style = document.createElement('style');
+    style.id = 'loading-styles';
+    style.textContent = `
+        .fa-spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
 }
