@@ -30,14 +30,13 @@ const path = require('path');
 // Servir arquivos estáticos da pasta Front-End
 app.use(express.static(path.join(__dirname, '../Front-End')));
 
-// Rota padrão para abrir automaticamente a tela de login
+// 🚀 Rota inicial → sempre abre a tela de login
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../Front-End/front/tela3_cadastro_pessoal.html'));
-
+    res.sendFile(path.join(__dirname, '../Front-End/front/tela1_login.html'));
 });
 // --- Rotas da API ---
 
-// Rota de Autenticação (CADASTRO E LOGIN - SEM TOKEN)
+// Rota de Autenticação (CADASTRO E LOGIN )
 app.use('/api/auth', require('./src/routes/authRoutes'));
 
 // Demais rotas
