@@ -6,11 +6,10 @@ const bcrypt = require('bcrypt');
 async function criar(dadosUsuario) {
     const { nome, email, senha, telefone, tipo_usuario } = dadosUsuario;
 
-    const senhaHash = await bcrypt.hash(senha, 10);
 
     const sql = `INSERT INTO Usuario (nome, email, senha, telefone, tipo_usuario, data_cadastro) 
                  VALUES (?, ?, ?, ?, ?, NOW())`;
-    const [resultado] = await db.execute(sql, [nome, email, senhaHash, telefone, tipo_usuario]);
+    const [resultado] = await db.execute(sql, [nome, email, senha, telefone, tipo_usuario]);
     return resultado;
 }
 
