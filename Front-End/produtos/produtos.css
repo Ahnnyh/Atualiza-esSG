@@ -304,3 +304,17 @@ body {
   transform: scale(1.05);
   background: linear-gradient(135deg, #388e3c, #1b5e20);
 }
+
+.banner-safra {
+   background: url("../imagens/safra.png") no-repeat center;
+  background-size: cover;
+  padding: 70px 30px 110px;
+  color: white;
+  position: relative;
+}
+
+.banner-safra-text {
+  font-size: 25px;
+  font-weight: 600;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+}
