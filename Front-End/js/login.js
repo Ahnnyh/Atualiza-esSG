@@ -1,5 +1,5 @@
-// URL base da sua API
-const API_URL = 'http://localhost:3000'; 
+// login.js - Funcionalidades específicas de login
+const API_URL = 'http://localhost:3000';
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginBtn = document.getElementById('loginBtn');
@@ -14,12 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     loginBtn.addEventListener('click', async (e) => {
-        e.preventDefault(); // Impede o envio padrão do formulário
+        e.preventDefault();
         
         const email = emailInput.value;
         const senha = senhaInput.value;
 
-        errorMessage.style.display = 'none'; // Esconde erros anteriores
+        errorMessage.style.display = 'none';
         loginBtn.textContent = 'Entrando...';
         loginBtn.disabled = true;
 
@@ -32,43 +32,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ email, senha }),
             });
 
+            if (!response.ok) {
+                const texto = await response.text();  // vê o que veio (HTML de erro, etc)
+                console.error('Resposta não ok:', texto);
+                throw new Error('Erro na requisição');
+}
+            
             const data = await response.json();
 
             if (response.ok) {
                 // Login bem-sucedido
                 const { id_usuario, nome, tipo_usuario } = data.usuario;
                 
-                // 1. Armazenar dados na sessão/localStorage
+                // Armazenar dados na sessão/localStorage
                 localStorage.setItem('user_id', id_usuario);
                 localStorage.setItem('user_name', nome);
                 localStorage.setItem('user_type', tipo_usuario);
+                localStorage.setItem('usuario', JSON.stringify(data.usuario));
                 
-                // 2. Redirecionar baseado no tipo de usuário
+                // Redirecionar baseado no tipo de usuário
                 if (tipo_usuario === 'P') {
-                    // Produtor (P) / Vendedor
                     window.location.href = 'tela7_perfil_vendedor.html'; 
                 } else if (tipo_usuario === 'C') {
-                    // Comprador (C)
                     window.location.href = 'home2.html'; 
                 } else {
-                    // Tipo desconhecido ou não definido (fallback)
                     console.warn('Tipo de usuário desconhecido:', tipo_usuario);
                     window.location.href = 'home2.html'; 
                 }
 
             } else {
-                // Login falhou (401 Credenciais Inválidas ou 400 Campos Faltando)
                 errorMessage.textContent = data.erro || 'Ocorreu um erro no login. Tente novamente.';
                 errorMessage.style.display = 'block';
             }
 
         } catch (error) {
             console.error('Erro de rede ou servidor:', error);
-            errorMessage.textContent = 'Falha na comunicação com o servidor. Verifique a conexão. (Certifique-se que o backend está rodando em http://localhost:3000)';
+            errorMessage.textContent = 'Falha na comunicação com o servidor. Verifique a conexão.';
             errorMessage.style.display = 'block';
         } finally {
             loginBtn.textContent = 'Entrar';
             loginBtn.disabled = false;
+        }
+    });
+
+    // Enter para fazer login
+    document.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            loginBtn.click();
         }
     });
 });
