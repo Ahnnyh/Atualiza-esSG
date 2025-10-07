@@ -1,8 +1,10 @@
+/* styles-unificados.css - Todos os estilos de login e cadastro */
 @font-face {
     font-family: 'Poppins';
     src: url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap') format('truetype');
 }
 
+/* ===== ESTILOS BASE E LOGIN ===== */
 body {
     margin: 0;
     padding: 0;
@@ -10,10 +12,9 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Alterado para min-height */
+    min-height: 100vh;
     background-color: #f0f0f0;
     position: relative;
-    /* overflow: hidden; foi removido daqui para permitir a rolagem */
 }
 
 .background {
@@ -23,9 +24,9 @@ body {
     width: 100%;
     height: 100%;
     background-image: url('../imagens/fundo_safra_go.jpg');
-    background-size: cover; /* Use 'cover' se quiser que a imagem preencha o fundo */
+    background-size: cover;
     background-position: center;
-    background-repeat: no-repeat; /* Ajustado para não repetir, para um fundo fixo */
+    background-repeat: no-repeat;
     background-attachment: fixed;
     filter: brightness(0.5);
     z-index: 1;
@@ -37,7 +38,7 @@ body {
     text-align: center;
     color: #fff;
     width: 90%;
-    max-width: 450px; /* Ajustado para 450px como na terceira tela */
+    max-width: 450px;
     padding: 20px;
 }
 
@@ -50,7 +51,8 @@ body {
     height: auto;
 }
 
-.form-container { /* Estilos da tela de login/cadastro */
+/* ===== ESTILOS DO FORMULÁRIO DE LOGIN/CADASTRO ===== */
+.form-container {
     padding: 30px;
     border-radius: 10px;
 }
@@ -73,7 +75,6 @@ body {
     box-sizing: border-box;
 }
 
-/* Regra para o placeholder, já que a sintaxe "&" é de pré-processador */
 .form-container input::placeholder {
     color: #fff;
 }
@@ -152,7 +153,7 @@ body {
     margin-right: 10px;
 }
 
-/* Estilos da tela de seleção de perfil */
+/* ===== ESTILOS DA SELEÇÃO DE PERFIL ===== */
 .profile-options {
     padding: 30px;
     border-radius: 10px;
@@ -175,26 +176,22 @@ body {
     margin: 0;
 }
 
-/* Estilos da tela de formulário (última tela) */
-.header {
+/* ===== ESTILOS DO FORMULÁRIO DE CADASTRO (TELA 4) ===== */
+/* Header específico para tela4_cadastro_senha */
+.header-tela4 {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
     margin-bottom: 20px;
 }
 
-.header-content {
-    display: flex;
-    flex-grow: 1;
-    justify-content: center;
-    align-items: center;
+.header-icon {
+    width: 150px;
+    margin-right: 10px;
 }
 
-.header h1 {
-    color: #fff;
-    margin-bottom: 0;
+.header-tela4 h1 {
     font-size: 24px;
+    color: #fff;
 }
 
 .form-card {
@@ -275,7 +272,70 @@ form input {
     background-color: #003328;
 }
 
+/* ===== ESTILOS DO CADASTRO SENHA (TELA 5) ===== */
+/* Header específico para tela5_cadastro_senha */
+.header-tela5 {
+    display: block;
+    text-align: center;
+    padding: 10px 0;
+    margin-bottom: 5px;
+}
 
+.logo-container-tela5 {
+    margin-bottom: 0px;
+}
+
+.logo-tela5 {
+    max-width: 150px;
+}
+
+.nav-container {
+    text-align: left;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.2em;
+}
+
+.back-link i {
+    background-color: #2a7e2a;
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+/* Seta verde específica para tela5 */
+.arrow-button-tela5 {
+    width: 50px;
+    height: 50px;
+    background-color: #2a7e2a;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+    font-size: 20px;
+}
+
+.arrow-container-tela5 {
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+/* ===== ESTILOS DE VALIDAÇÃO E ERRO ===== */
 .mensagem-erro {
     color: red;
     font-size: 0.85rem;
@@ -290,7 +350,89 @@ form input {
     font-size: 1rem;
 }
 
-
 .campo-invalido {
     border: 1px solid red;
+}
+
+/* ===== MEDIA QUERIES PARA RESPONSIVIDADE ===== */
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .form-container {
+        padding: 20px;
+    }
+    
+    .profile-options {
+        padding: 20px;
+    }
+    
+    .form-card {
+        padding: 15px;
+    }
+    
+    .header-tela4 h1 {
+        font-size: 20px;
+    }
+    
+    .logo {
+        width: 150px;
+    }
+    
+    .logo-tela5 {
+        max-width: 120px;
+    }
+}
+
+@media (max-width: 360px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .form-container, 
+    .profile-options, 
+    .form-card {
+        padding: 15px;
+    }
+    
+    .btn, 
+    .option, 
+    .social-btn {
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    .back-link {
+        font-size: 1em;
+    }
+}
+
+/* ===== CORREÇÕES DE COMPATIBILIDADE ===== */
+/* Garante que telas específicas tenham overflow hidden quando necessário */
+body.tela-cadastro-senha {
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* Estilos para header genérico (usado em múltiplas telas) */
+.header-generic {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.header-content {
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-generic h1 {
+    color: #fff;
+    margin-bottom: 0;
+    font-size: 24px;
 }

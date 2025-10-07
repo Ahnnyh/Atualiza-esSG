@@ -25,7 +25,7 @@
       <i class="fas fa-bars"></i>
     </button>
     <div class="logo">
-      <img src="imagens/logo.png" alt="SafraGo" class="logo-icon">
+      <img src="../imagens/logo.png" alt="SafraGo" class="logo-icon">
     </div>
     <button class="chat-btn" aria-label="Abrir chat">
       <i class="fas fa-comment"></i>
@@ -84,7 +84,7 @@
         <!-- Banana -->
         <div class="featured-card" data-category="frutas">
           <div class="featured-image">
-            <img src="imagens/banana.png" alt="Banana Nanica" loading="lazy">
+            <img src="../imagens/bananas.png" alt="Banana Nanica" loading="lazy">
           </div>
           <div class="featured-info">
             <h4>Banana Nanica</h4>
@@ -97,7 +97,7 @@
         <!-- Laranja -->
         <div class="featured-card" data-category="frutas">
           <div class="featured-image">
-            <img src="imagens/laranja.png" alt="Laranja Pera" loading="lazy">
+            <img src="../imagens/laranjas.png" alt="Laranja Pera" loading="lazy">
           </div>
           <div class="featured-info">
             <h4>Laranja Pera</h4>
@@ -110,7 +110,7 @@
         <!-- Maçã -->
         <div class="featured-card" data-category="frutas">
           <div class="featured-image">
-            <img src="imagens/maca.png" alt="Maçã Gala" loading="lazy">
+            <img src="../imagens/maca.png" alt="Maçã Gala" loading="lazy">
           </div>
           <div class="featured-info">
             <h4>Maçã Gala</h4>
@@ -123,7 +123,7 @@
         <!-- Cenoura -->
         <div class="featured-card" data-category="hortalicas">
           <div class="featured-image">
-            <img src="imagens/cenouras.png" alt="Cenoura" loading="lazy">
+            <img src="../imagens/cenouras.png" alt="Cenoura" loading="lazy">
           </div>
           <div class="featured-info">
             <h4>Cenoura</h4>
@@ -136,7 +136,7 @@
         <!-- Arroz -->
         <div class="featured-card" data-category="graos">
           <div class="featured-image">
-            <img src="imagens/arroz.png" alt="Arroz Integral" loading="lazy">
+            <img src="../imagens/arroz.jpg" alt="Arroz Integral" loading="lazy">
           </div>
           <div class="featured-info">
             <h4>Arroz Integral</h4>
@@ -149,7 +149,7 @@
         <!-- Feijão -->
         <div class="featured-card" data-category="graos">
           <div class="featured-image">
-            <img src="imagens/feijao.png" alt="Feijão Carioca" loading="lazy">
+            <img src="../imagens/feijão.png" alt="Feijão Carioca" loading="lazy">
           </div>
           <div class="featured-info">
             <h4>Feijão Carioca</h4>
@@ -194,14 +194,13 @@
       </div>
     </section>
   </main>
-
-  <!-- Navbar inferior -->
+  
   <nav class="bottom-nav">
-    <a href="home2.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
-    <a href="#" class="active"><i class="fa-solid fa-magnifying-glass"></i><span>Pesquisar</span></a>
-    <a href="catalogo.html"><i class="fa-solid fa-basket-shopping"></i><span>Catálogo</span></a>
-    <a href="favoritos.html"><i class="fa-solid fa-heart"></i><span>Favoritos</span></a>
-    <a href="perfil.html"><i class="fa-solid fa-user"></i><span>Perfil</span></a>
+    <a href="../front/home2.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
+    <a href="pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i><span>Pesquisar</span></a>
+    <a href="catalogo.html" class="cart active"><i class="fa-solid fa-basket-shopping"></i><span>Catálogo</span></a>
+    <a href="../favoritos.html"><i class="fa-solid fa-heart"></i><span>Favoritos</span></a>
+    <a href="../front/tela2_perfil.html"><i class="fa-solid fa-user"></i><span>Perfil</span></a>
   </nav>
 
   <!-- Modal de filtros -->
@@ -251,16 +250,10 @@
           <h4>Estado do Produtor</h4>
           <select id="stateFilter">
             <option value="">Todos os estados</option>
-            <option value="PR">Paraná</option>
-            <option value="SP">São Paulo</option>
-            <option value="RS">Rio Grande do Sul</option>
-            <option value="MG">Minas Gerais</option>
-            <option value="BA">Bahia</option>
             <option value="GO">Goiás</option>
             <option value="MT">Mato Grosso</option>
             <option value="MS">Mato Grosso do Sul</option>
-            <option value="RJ">Rio de Janeiro</option>
-            <option value="PE">Pernambuco</option>
+            <option value="DF">Distrito Federal</option>
           </select>
         </div>
       </div>
@@ -272,6 +265,6 @@
     </div>
   </div>
 
-  <script src="../js/pesquisa.js"></script>
+  <script src="../js/filtros.js"></script>
 </body>
 </html>

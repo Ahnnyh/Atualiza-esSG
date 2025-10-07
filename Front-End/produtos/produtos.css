@@ -1,3 +1,362 @@
+/* ==== INÍCIO: produtos.css ==== */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #fff;
+  padding-bottom: 70px; /* espaço pra navbar */
+}
+
+/* Cabeçalho */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+.header-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.logo {
+  height: 60px;
+  max-width: 210px;
+}
+
+.back-btn {
+  background: #4CAF50;
+  border: none;
+  color: white;
+  font-size: 18px;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+}
+
+.header h1 {
+  font-size: 18px;
+  color: #4CAF50;
+}
+
+/* Imagem do produto */
+.produto-banner {
+  margin-top: 60px;
+  position: relative;
+  text-align: center;
+}
+
+.produto-banner img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.produto-nome {
+  background: #f1f8e9;
+  color: #3e2723;
+  padding: 8px 15px;
+  border-radius: 12px;
+  display: inline-block;
+  margin-top: -20px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Informações */
+.produto-info {
+  padding: 15px;
+}
+
+.produto-info h3 {
+  margin-top: 15px;
+  color: #3e2723;
+}
+
+.vendedor {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.vendedor img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Botão de interesse */
+.contato {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.btn-interesse {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 14px 20px;
+  font-size: 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Navbar inferior */
+.bottom-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #401D04;
+  padding: 15px 0;
+  z-index: 1000;
+  border-top: 3px solid #2E7D32;
+  box-shadow: 0 -4px 15px rgba(64, 29, 4, 0.2);
+}
+
+.bottom-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #F5FCF8;
+  font-size: 12px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 8px 12px;
+  border-radius: 12px;
+  position: relative;
+}
+
+.bottom-nav a:hover {
+  color: #FFFFFF;
+  background: rgba(46, 125, 50, 0.3);
+  transform: translateY(-2px);
+}
+
+.bottom-nav a.active {
+  color: #ffffff;
+}
+
+.bottom-nav a.active::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  background: #ffffff;
+  border-radius: 50%;
+}
+
+.bottom-nav i {
+  font-size: 22px;
+  margin-bottom: 6px;
+  transition: transform 0.3s ease;
+}
+
+.bottom-nav a:hover i {
+  transform: scale(1.1);
+}
+
+.bottom-nav .cart {
+  color: #ffffff;
+  background: #2E7D32;
+  border-radius: 50%;
+  padding: 12px;
+  margin-top: -20px;
+  box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4);
+}
+
+.bottom-nav .cart:hover {
+  background: #2E7D32;
+  transform: translateY(-3px) scale(1.05);
+}
+
+/* Responsividade */
+
+/* Telas pequenas (celulares até 480px) */
+@media (max-width: 480px) {
+  .logo {
+    height: 45px;
+    max-width: 150px;
+  }
+
+  .header h1 {
+    font-size: 16px;
+  }
+
+  .produto-banner img {
+    height: 150px;
+  }
+
+  .btn-interesse {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  .vendedor img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .bottom-nav {
+    padding: 12px 0;
+  }
+  
+  .bottom-nav i {
+    font-size: 20px;
+  }
+  
+  .bottom-nav a {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+}
+
+/* Telas médias (tablets até 768px) */
+@media (max-width: 768px) {
+  .logo {
+    height: 50px;
+    max-width: 180px;
+  }
+
+  .produto-banner img {
+    height: 180px;
+  }
+
+  .btn-interesse {
+    padding: 12px 18px;
+    font-size: 15px;
+  }
+}
+
+/* Cartão de produto */
+.produto-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px;
+  margin: 15px 0;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+.produto-card img {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.produto-card h3 {
+  margin: 10px 0 5px;
+  font-size: 18px;
+  color: #3e2723;
+}
+
+.produto-card p {
+  color: #4CAF50;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Estilo para as seções em formato de cards */
+.produto-info {
+  background: #fff;
+  margin: 15px;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.produto-info h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #2e7d32;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Ícones nos títulos */
+.produto-info h3::before {
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: #4CAF50;
+}
+
+.produto-info:nth-of-type(1) h3::before { content: "\f15c"; } /* Descrição - ícone arquivo */
+.produto-info:nth-of-type(2) h3::before { content: "\f02d"; } /* Info técnica - lista */
+.produto-info:nth-of-type(3) h3::before { content: "\f155"; } /* Preço */
+.produto-info:nth-of-type(4) h3::before { content: "\f466"; } /* Quantidade */
+.produto-info:nth-of-type(5) h3::before { content: "\f017"; } /* Validade */
+.produto-info:nth-of-type(6) h3::before { content: "\f007"; } /* Vendedor */
+.produto-info:nth-of-type(7) h3::before { content: "\f071"; } /* Avisos */
+
+/* Vendedor em card diferenciado */
+.vendedor {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  background: #f9fbe7;
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.vendedor img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #4CAF50;
+}
+
+/* Avisos importantes com destaque */
+.produto-info ul li {
+  margin: 6px 0;
+} 
+
+/* Botão de contato fixo */
+.contato {
+  position: sticky;
+  bottom: 80px;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-interesse {
+  background: linear-gradient(135deg, #43a047, #2e7d32);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.btn-interesse:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #388e3c, #1b5e20);
+}
+
+/* ==== FIM: produtos.css ==== */
+
+/* ==== INÍCIO: detalhes.css ==== */
+
 /* produtos.css - Estilos para o catálogo de produtos - Paleta SafraGo */
 * {
   margin: 0;
@@ -889,14 +1248,14 @@ input:focus-visible {
 }
 
 .featured-card {
-  background: white;
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 2px 8px rgba(64, 29, 4, 0.1);
-  cursor: pointer;
-  transition: transform 0.3s;
-  position: relative;
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(64, 29, 4, 0.08);
+  transition: all 0.3s ease;
   border: 1px solid #E8F5E9;
+  position: relative;
+  overflow: hidden;
 }
 
 .featured-card:hover {
@@ -906,19 +1265,21 @@ input:focus-visible {
 
 .featured-image {
   width: 100%;
-  height: 100px;
-  margin-bottom: 0.5rem;
+  height: 120px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 15px;
+  background: #F5FCF8;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #F5FCF8;
-  border-radius: 8px;
 }
 
 .featured-image img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
 }
 
 .featured-info h4 {
@@ -1249,3 +1610,5 @@ input:focus-visible {
     width: 100%;
   }
 }
+
+/* ==== FIM: detalhes.css ==== */
