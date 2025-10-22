@@ -1,206 +1,164 @@
-// cadastro.senha.js - Corrigido
-document.addEventListener('DOMContentLoaded', function () {
-    configurarCadastroSenha();
-});
+// js/cadastro_senha.js - VERSÃO CORRIGIDA
+import { auth } from "./firebaseConfig.js";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  updateProfile
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
-function configurarCadastroSenha() {
-    const btnAvancar = document.querySelector('.arrow-button');
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("formSenha");
+  const mensagem = document.getElementById("msg");
 
-    if (btnAvancar) {
-        btnAvancar.addEventListener('click', validarECompletarCadastro);
-    }
+  console.log("🔍 Procurando formulário...");
+  console.log("Formulário encontrado:", form);
+  console.log("Elemento de mensagem:", mensagem);
 
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            validarECompletarCadastro();
-        }
-    });
-
-    mostrarEmailUsuario();
-}
-
-function mostrarEmailUsuario() {
-    const dados = JSON.parse(localStorage.getItem('dadosCadastroTemporarios'));
-    const emailElement = document.getElementById('emailUsuario');
-
-    if (emailElement && dados) {
-        emailElement.textContent = dados.email;
-    }
-}
-
-function validarECompletarCadastro() {
-    limparErros();
-
-    const senha = document.getElementById('senha').value.trim();
-    const confirmarSenha = document.getElementById('confirmarSenha').value.trim();
-
-    let erro = false;
-
-    if (!senha) {
-        mostrarErro('senha', 'Senha é obrigatória.');
-        erro = true;
-    } else if (senha.length < 6) {
-        mostrarErro('senha', 'Senha deve ter pelo menos 6 caracteres.');
-        erro = true;
-    }
-
-    if (!confirmarSenha) {
-        mostrarErro('confirmarSenha', 'Confirme sua senha.');
-        erro = true;
-    } else if (senha && confirmarSenha !== senha) {
-        mostrarErro('confirmarSenha', 'As senhas não coincidem.');
-        erro = true;
-    }
-
-    if (erro) return;
-
-    completarCadastro(senha);
-}
-
-async function completarCadastro(senha) {
-    const btnAvancar = document.querySelector('.arrow-button');
+  if (!form) {
+    console.error("❌ Formulário não encontrado! Verifique se o ID 'formSenha' existe no HTML.");
     
+    // Tentar encontrar formulário de outra forma
+    const formAlternativo = document.querySelector("form");
+    console.log("Formulário alternativo:", formAlternativo);
+    
+    if (!formAlternativo) {
+      alert("Erro: Formulário não encontrado. Contate o suporte.");
+      return;
+    }
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    console.log("✅ Formulário submetido!");
+
+    const senha = document.getElementById("senha").value.trim();
+    const confirmar = document.getElementById("confirmarSenha").value.trim();
+
+    console.log("Senha:", senha);
+    console.log("Confirmar:", confirmar);
+
+    if (!senha || !confirmar) {
+      mostrarMensagem("Preencha todos os campos.", "erro");
+      return;
+    }
+
+    if (senha.length < 6) {
+      mostrarMensagem("A senha deve ter pelo menos 6 caracteres.", "erro");
+      return;
+    }
+
+    if (senha !== confirmar) {
+      mostrarMensagem("As senhas não coincidem!", "erro");
+      return;
+    }
+
+    const email = localStorage.getItem("usuarioEmail");
+    const userData = localStorage.getItem("usuarioDados");
+
+    console.log("Email do localStorage:", email);
+    console.log("Dados do usuário:", userData);
+
+    if (!email) {
+      mostrarMensagem("E-mail não encontrado. Volte e refaça o cadastro.", "erro");
+      setTimeout(() => {
+        window.location.href = "cadastro_pessoal.html";
+      }, 2000);
+      return;
+    }
+
     try {
-        // ✅ Mostrar loading no botão
-        btnAvancar.disabled = true;
-        btnAvancar.innerHTML = '<div class="loading-spinner"></div>';
+      mostrarMensagem("Criando sua conta...", "info");
 
-        const dadosTemp = JSON.parse(localStorage.getItem('dadosCadastroTemporarios'));
+      // ✅ Cria usuário no Firebase
+      const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+      const user = userCredential.user;
 
-        if (!dadosTemp) {
-            mostrarErroGeral('Dados não encontrados. Volte para a etapa anterior.');
-            return;
+      console.log("✅ Usuário criado:", user.email);
+
+      // ✅ Atualizar perfil com nome completo se existir
+      if (userData) {
+        try {
+          const dados = JSON.parse(userData);
+          await updateProfile(user, {
+            displayName: dados.nome
+          });
+          console.log("✅ Perfil atualizado com nome:", dados.nome);
+        } catch (profileError) {
+          console.error("Erro ao atualizar perfil:", profileError);
         }
+      }
 
-        const dadosCompletos = {
-            nome: `${dadosTemp.nome} ${dadosTemp.sobrenome}`,
-            email: dadosTemp.email,
-            senha: senha,
-            telefone: dadosTemp.telefone,
-            tipo_usuario: dadosTemp.tipo_usuario
-        };
+      // ✅ Enviar e-mail de verificação
+      await sendEmailVerification(user);
+      console.log("✅ Email de verificação enviado");
+      
+      mostrarMensagem("📧 Um e-mail de verificação foi enviado para você. Redirecionando...", "sucesso");
 
-        console.log('Enviando para cadastro:', dadosCompletos);
-
-        const response = await fetch('http://localhost:3000/api/auth/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dadosCompletos)
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            // ✅ SUCESSO: Limpar dados e redirecionar para home
-            localStorage.removeItem('dadosCadastroTemporarios');
-            mostrarSucesso('Cadastro realizado com sucesso! Redirecionando...');
-            
-            // ✅ Redirecionar para home após 2 segundos
-            setTimeout(() => {
-                window.location.href = 'home2.html';
-            }, 2000);
-            
-        } else {
-            mostrarErroGeral(data.mensagem || 'Erro ao cadastrar.');
-        }
+      // ✅ Redirecionar para a página de verificação após 2 segundos
+      setTimeout(() => {
+        console.log("🔄 Redirecionando para verificar.html");
+        window.location.href = "verificar.html";
+      }, 2000);
 
     } catch (error) {
-        console.error('Erro:', error);
-        mostrarErroGeral('Erro de conexão. Verifique se o servidor está rodando.');
-    } finally {
-        // ✅ Restaurar botão
-        btnAvancar.disabled = false;
-        btnAvancar.innerHTML = '<img src="../imagens/arrow_right.png" alt="Próximo" class="arrow-icon">';
+      console.error("❌ Erro no cadastro:", error);
+      let mensagemErro = "Erro ao criar conta: ";
+      
+      switch(error.code) {
+        case 'auth/email-already-in-use':
+          mensagemErro = "Este e-mail já está em uso. Tente fazer login.";
+          break;
+        case 'auth/invalid-email':
+          mensagemErro = "E-mail inválido.";
+          break;
+        case 'auth/weak-password':
+          mensagemErro = "Senha muito fraca. Use pelo menos 6 caracteres.";
+          break;
+        case 'auth/network-request-failed':
+          mensagemErro = "Erro de conexão. Verifique sua internet.";
+          break;
+        default:
+          mensagemErro = error.message;
+      }
+      
+      mostrarMensagem(mensagemErro, "erro");
     }
-}
+  });
 
-// ✅ Nova função para mostrar sucesso
-function mostrarSucesso(mensagem) {
-    const sucessoDiv = document.getElementById('sucessoGeral') || criarElementoSucesso();
-    sucessoDiv.textContent = mensagem;
-    sucessoDiv.style.display = 'block';
-    sucessoDiv.className = 'mensagem-sucesso';
-}
-
-function criarElementoSucesso() {
-    const sucessoDiv = document.createElement('div');
-    sucessoDiv.id = 'sucessoGeral';
-    sucessoDiv.className = 'mensagem-sucesso';
-    sucessoDiv.style.cssText = `
-        background-color: #4CAF50;
-        color: white;
-        padding: 12px;
-        border-radius: 4px;
-        margin-bottom: 16px;
-        text-align: center;
-        display: none;
-    `;
+  function mostrarMensagem(texto, tipo) {
+    console.log(`Mensagem [${tipo}]:`, texto);
     
-    const formCard = document.querySelector('.form-card');
-    formCard.insertBefore(sucessoDiv, formCard.firstChild);
-    return sucessoDiv;
-}
-
-// Utilitários de feedback visual (mantém os existentes)
-function mostrarErro(idCampo, mensagem) {
-    const campo = document.getElementById(idCampo);
-    if (!campo) return;
-
-    const erroId = idCampo + '-erro';
-    let erroSpan = document.getElementById(erroId);
-
-    if (!erroSpan) {
-        erroSpan = document.createElement('span');
-        erroSpan.id = erroId;
-        erroSpan.className = 'mensagem-erro';
-        campo.parentNode.insertBefore(erroSpan, campo.nextSibling);
+    if (mensagem) {
+      mensagem.textContent = texto;
+      mensagem.className = `mensagem ${tipo}`;
+      
+      // Estilos inline como fallback
+      if (tipo === 'sucesso') {
+        mensagem.style.backgroundColor = '#d4edda';
+        mensagem.style.color = '#155724';
+        mensagem.style.padding = '10px';
+        mensagem.style.borderRadius = '5px';
+        mensagem.style.margin = '10px 0';
+      } else if (tipo === 'erro') {
+        mensagem.style.backgroundColor = '#f8d7da';
+        mensagem.style.color = '#721c24';
+        mensagem.style.padding = '10px';
+        mensagem.style.borderRadius = '5px';
+        mensagem.style.margin = '10px 0';
+      } else {
+        mensagem.style.backgroundColor = '#d1ecf1';
+        mensagem.style.color = '#0c5460';
+        mensagem.style.padding = '10px';
+        mensagem.style.borderRadius = '5px';
+        mensagem.style.margin = '10px 0';
+      }
+    } else {
+      // Fallback se o elemento msg não existir
+      alert(texto);
     }
+  }
 
-    erroSpan.textContent = mensagem;
-    campo.classList.add('campo-invalido');
-}
-
-function mostrarErroGeral(mensagem) {
-    const erroGeral = document.getElementById('erroGeral');
-    if (erroGeral) {
-        erroGeral.textContent = mensagem;
-        erroGeral.style.display = 'block';
-    }
-}
-
-function limparErros() {
-    document.querySelectorAll('.mensagem-erro').forEach(el => el.remove());
-    document.querySelectorAll('.campo-invalido').forEach(el => el.classList.remove('campo-invalido'));
-    const erroGeral = document.getElementById('erroGeral');
-    if (erroGeral) erroGeral.style.display = 'none';
-    
-    const sucessoGeral = document.getElementById('sucessoGeral');
-    if (sucessoGeral) sucessoGeral.style.display = 'none';
-}
-
-// ✅ Adicionar estilo do loading
-const style = document.createElement('style');
-style.textContent = `
-    .loading-spinner {
-        width: 20px;
-        height: 20px;
-        border: 2px solid #ffffff;
-        border-top: 2px solid transparent;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin: 0 auto;
-    }
-    
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-    
-    .mensagem-sucesso {
-        background-color: #4CAF50 !important;
-    }
-`;
-document.head.appendChild(style);
+  // Debug: verificar se todos os elementos estão carregados
+  console.log("Elemento senha:", document.getElementById("senha"));
+  console.log("Elemento confirmarSenha:", document.getElementById("confirmarSenha"));
+});

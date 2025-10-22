@@ -1,84 +1,81 @@
-// login.js - Funcionalidades específicas de login
-const API_URL = 'http://localhost:3000';
+// js/login.js
+import { auth } from "./firebaseConfig.js";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
-document.addEventListener('DOMContentLoaded', () => {
-    const loginBtn = document.getElementById('loginBtn');
-    const emailInput = document.getElementById('email');
-    const senhaInput = document.getElementById('senha');
-    const errorMessage = document.getElementById('errorMessage');
+const form = document.getElementById("formLogin");
+const msg = document.getElementById("msg");
+const esqueceuSenha = document.querySelector(".forgot-password");
 
-    // Verifica se os elementos necessários existem na página
-    if (!loginBtn || !emailInput || !senhaInput || !errorMessage) {
-        console.error('Elementos de login não encontrados no DOM.');
-        return;
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("email").value.trim();
+  const senha = document.getElementById("senha").value;
+
+  if (!email || !senha) {
+    msg.textContent = "❌ Preencha todos os campos";
+    return;
+  }
+
+  msg.textContent = "Entrando...";
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+    const user = userCredential.user;
+
+    if (!user.emailVerified) {
+      msg.textContent = "⚠️ Verifique seu email antes de continuar.";
+      
+      // Oferecer reenviar verificação
+      setTimeout(() => {
+        const reenviar = confirm("Deseja reenviar o email de verificação?");
+        if (reenviar) {
+          sendEmailVerification(user);
+          alert("📧 Email de verificação reenviado!");
+        }
+      }, 1000);
+      return;
     }
 
-    loginBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        
-        const email = emailInput.value;
-        const senha = senhaInput.value;
+    msg.textContent = "✅ Login realizado! Redirecionando...";
+    
+    setTimeout(() => {
+      window.location.href = "perfil.html";
+    }, 1500);
 
-        errorMessage.style.display = 'none';
-        loginBtn.textContent = 'Entrando...';
-        loginBtn.disabled = true;
+  } catch (error) {
+    console.error(error);
+    let mensagemErro = "❌ Erro: ";
+    
+    switch(error.code) {
+      case 'auth/user-not-found':
+        mensagemErro += "Usuário não encontrado";
+        break;
+      case 'auth/wrong-password':
+        mensagemErro += "Senha incorreta";
+        break;
+      case 'auth/invalid-email':
+        mensagemErro += "Email inválido";
+        break;
+      default:
+        mensagemErro += error.message;
+    }
+    
+    msg.textContent = mensagemErro;
+  }
+});
 
-        try {
-            const response = await fetch(`${API_URL}/api/auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, senha }),
-            });
-
-            if (!response.ok) {
-                const texto = await response.text();  // vê o que veio (HTML de erro, etc)
-                console.error('Resposta não ok:', texto);
-                throw new Error('Erro na requisição');
-}
-            
-            const data = await response.json();
-
-            if (response.ok) {
-                // Login bem-sucedido
-                const { id_usuario, nome, tipo_usuario } = data.usuario;
-                
-                // Armazenar dados na sessão/localStorage
-                localStorage.setItem('user_id', id_usuario);
-                localStorage.setItem('user_name', nome);
-                localStorage.setItem('user_type', tipo_usuario);
-                localStorage.setItem('usuario', JSON.stringify(data.usuario));
-                
-                // Redirecionar baseado no tipo de usuário
-                if (tipo_usuario === 'P') {
-                    window.location.href = 'tela7_perfil_vendedor.html'; 
-                } else if (tipo_usuario === 'C') {
-                    window.location.href = 'home2.html'; 
-                } else {
-                    console.warn('Tipo de usuário desconhecido:', tipo_usuario);
-                    window.location.href = 'home2.html'; 
-                }
-
-            } else {
-                errorMessage.textContent = data.erro || 'Ocorreu um erro no login. Tente novamente.';
-                errorMessage.style.display = 'block';
-            }
-
-        } catch (error) {
-            console.error('Erro de rede ou servidor:', error);
-            errorMessage.textContent = 'Falha na comunicação com o servidor. Verifique a conexão.';
-            errorMessage.style.display = 'block';
-        } finally {
-            loginBtn.textContent = 'Entrar';
-            loginBtn.disabled = false;
-        }
-    });
-
-    // Enter para fazer login
-    document.addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            loginBtn.click();
-        }
-    });
+// Esqueceu senha
+esqueceuSenha.addEventListener("click", async (e) => {
+  e.preventDefault();
+  const email = prompt("Digite seu email para redefinir a senha:");
+  
+  if (email) {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert("📧 Email de redefinição de senha enviado!");
+    } catch (error) {
+      alert("❌ Erro: " + error.message);
+    }
+  }
 });

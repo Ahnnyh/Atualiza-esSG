@@ -1,155 +1,123 @@
-document.addEventListener('DOMContentLoaded', function () {
-    configurarCadastro();
-    configurarBuscaCEP();
-});
+// js/cadastro.js - NOVA VERSÃO PARA CADASTRO PESSOAL
+import { auth } from "./firebaseConfig.js";
+import { 
+  createUserWithEmailAndPassword, 
+  sendEmailVerification,
+  updateProfile 
+} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
-function configurarCadastro() {
-    const btnAvancar = document.querySelector('.arrow-button');
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.querySelector("form");
+  const arrowButton = document.querySelector(".arrow-button");
 
-    if (btnAvancar) {
-        btnAvancar.addEventListener('click', validarEAvancar);
-    }
+  if (!form) {
+    console.error("❌ Formulário não encontrado!");
+    return;
+  }
 
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            validarEAvancar();
-        }
+  // Adicionar máscaras aos campos
+  const cpfInput = document.getElementById("cpf");
+  const telefoneInput = document.getElementById("telefone");
+  const cepInput = document.getElementById("cep");
+
+  if (cpfInput) {
+    cpfInput.addEventListener("input", (e) => {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length <= 11) {
+        value = value.replace(/(\d{3})(\d)/, '$1.$2')
+                     .replace(/(\d{3})(\d)/, '$1.$2')
+                     .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        e.target.value = value;
+      }
     });
-}
+  }
 
-function validarEAvancar() {
-    limparErros();
+  if (telefoneInput) {
+    telefoneInput.addEventListener("input", (e) => {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length <= 11) {
+        value = value.replace(/(\d{2})(\d)/, '($1) $2')
+                     .replace(/(\d{5})(\d)/, '$1-$2');
+        e.target.value = value;
+      }
+    });
+  }
 
-    const dados = {
-        nome: document.getElementById('nome')?.value.trim(),
-        sobrenome: document.getElementById('sobrenome')?.value.trim(),
-        cpf: document.getElementById('cpf')?.value.trim(),
-        email: document.getElementById('email')?.value.trim(),
-        telefone: document.getElementById('telefone')?.value.trim(),
-        tipo_usuario: getTipoUsuarioFromURL()
-    };
+  if (cepInput) {
+    cepInput.addEventListener("input", async (e) => {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length <= 8) {
+        value = value.replace(/(\d{5})(\d)/, '$1-$2');
+        e.target.value = value;
+      }
 
-    let erro = false;
-
-    if (!dados.nome) {
-        mostrarErro('nome', 'Nome é obrigatório.');
-        erro = true;
-    } else if (dados.nome.length < 2) {
-        mostrarErro('nome', 'Nome deve ter pelo menos 2 caracteres.');
-        erro = true;
-    }
-
-    if (!dados.sobrenome) {
-        mostrarErro('sobrenome', 'Sobrenome é obrigatório.');
-        erro = true;
-    }
-
-    if (!dados.email) {
-        mostrarErro('email', 'E-mail é obrigatório.');
-        erro = true;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(dados.email)) {
-        mostrarErro('email', 'E-mail inválido.');
-        erro = true;
-    }
-
-    const cpfNumeros = dados.cpf.replace(/\D/g, '');
-    if (!dados.cpf) {
-        mostrarErro('cpf', 'CPF é obrigatório.');
-        erro = true;
-    } else if (cpfNumeros.length !== 11) {
-        mostrarErro('cpf', 'CPF deve conter 11 dígitos numéricos.');
-        erro = true;
-    }
-
-    const telefoneNumeros = dados.telefone.replace(/\D/g, '');
-    if (!dados.telefone) {
-        mostrarErro('telefone', 'Telefone é obrigatório.');
-        erro = true;
-    } else if (telefoneNumeros.length < 10) {
-        mostrarErro('telefone', 'Telefone deve conter ao menos 10 dígitos.');
-        erro = true;
-    }
-
-    if (erro) return;
-
-    salvarDadosTemporarios(dados);
-    window.location.href = 'tela4_cadastro_senha.html';
-}
-
-function salvarDadosTemporarios(dados) {
-    const dadosCompletos = {
-        ...dados,
-        cep: document.getElementById('cep')?.value || '',
-        endereco: document.getElementById('endereco')?.value || '',
-        numero: document.getElementById('numero')?.value || '',
-        bairro: document.getElementById('bairro')?.value || '',
-        cidade: document.getElementById('cidade')?.value || '',
-        uf: document.getElementById('uf')?.value || '',
-        complemento: document.getElementById('complemento')?.value || ''
-    };
-
-    localStorage.setItem('dadosCadastroTemporarios', JSON.stringify(dadosCompletos));
-}
-
-function getTipoUsuarioFromURL() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const tipo = urlParams.get('tipo');
-    return tipo === 'produtor' ? 'P' : 'C';
-}
-
-function configurarBuscaCEP() {
-    const cepInput = document.getElementById('cep');
-    if (cepInput) {
-        cepInput.addEventListener('blur', buscarCEP);
-    }
-}
-
-async function buscarCEP() {
-    limparErros();
-
-    const cepInput = document.getElementById('cep');
-    const cep = cepInput.value.replace(/\D/g, '');
-
-    if (cep.length === 8) {
+      // Buscar CEP automaticamente
+      if (value.replace(/\D/g, '').length === 8) {
         try {
-            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-            const endereco = await response.json();
-
-            if (!endereco.erro) {
-                document.getElementById('endereco').value = endereco.logradouro || '';
-                document.getElementById('bairro').value = endereco.bairro || '';
-                document.getElementById('cidade').value = endereco.localidade || '';
-                document.getElementById('uf').value = endereco.uf || '';
-            } else {
-                mostrarErro('cep', 'CEP não encontrado.');
-            }
+          const response = await fetch(`https://viacep.com.br/ws/${value.replace(/\D/g, '')}/json/`);
+          const data = await response.json();
+          
+          if (!data.erro) {
+            document.getElementById("endereco").value = data.logradouro || '';
+            document.getElementById("bairro").value = data.bairro || '';
+            document.getElementById("cidade").value = data.localidade || '';
+            document.getElementById("uf").value = data.uf || '';
+          }
         } catch (error) {
-            console.error('Erro ao buscar CEP:', error);
-            mostrarErro('cep', 'Erro ao buscar o CEP. Verifique sua conexão.');
+          console.error("Erro ao buscar CEP:", error);
         }
+      }
+    });
+  }
+
+  // Evento do botão de próxima tela
+  arrowButton.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    // Coletar dados do formulário
+    const nome = document.getElementById("nome").value.trim();
+    const sobrenome = document.getElementById("sobrenome").value.trim();
+    const cpf = document.getElementById("cpf").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const telefone = document.getElementById("telefone").value.trim();
+    const cep = document.getElementById("cep").value.trim();
+    const cidade = document.getElementById("cidade").value.trim();
+    const uf = document.getElementById("uf").value.trim();
+    const endereco = document.getElementById("endereco").value.trim();
+    const numero = document.getElementById("numero").value.trim();
+    const bairro = document.getElementById("bairro").value.trim();
+    const complemento = document.getElementById("complemento").value.trim();
+
+    // Validação básica
+    if (!nome || !email || !cpf) {
+      alert("Por favor, preencha pelo menos nome, email e CPF.");
+      return;
     }
-}
 
-function mostrarErro(idCampo, mensagem) {
-    const campo = document.getElementById(idCampo);
-    if (!campo) return;
-
-    const erroId = idCampo + '-erro';
-    let erroSpan = document.getElementById(erroId);
-
-    if (!erroSpan) {
-        erroSpan = document.createElement('span');
-        erroSpan.id = erroId;
-        erroSpan.className = 'mensagem-erro';
-        campo.parentNode.insertBefore(erroSpan, campo.nextSibling);
+    if (cpf.replace(/\D/g, '').length !== 11) {
+      alert("CPF deve ter 11 dígitos.");
+      return;
     }
 
-    erroSpan.textContent = mensagem;
-    campo.classList.add('campo-invalido');
-}
+    // Salvar dados no localStorage para usar na próxima tela
+    const userData = {
+      nome: `${nome} ${sobrenome}`,
+      email,
+      cpf,
+      telefone,
+      cep,
+      cidade,
+      uf,
+      endereco,
+      numero,
+      bairro,
+      complemento
+    };
 
-function limparErros() {
-    document.querySelectorAll('.mensagem-erro').forEach(el => el.remove());
-    document.querySelectorAll('.campo-invalido').forEach(el => el.classList.remove('campo-invalido'));
-}
+    localStorage.setItem("usuarioDados", JSON.stringify(userData));
+    localStorage.setItem("usuarioEmail", email);
+
+    // Redirecionar para tela de senha
+    window.location.href = "cadastro_senha.html";
+  });
+});
