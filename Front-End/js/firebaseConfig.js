@@ -1,23 +1,23 @@
-// Importa as funções necessárias do SDK
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+// Front-End/js/firebaseConfig.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-// Configuração do seu projeto Firebase
+// Configuração do Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyC7aLm7Ztcl7wHC9yvM_5vYULZeUCAUnCA",
-  authDomain: "safraago.firebaseapp.com",
-  projectId: "safraago",
-  storageBucket: "safraago.firebasestorage.app",
-  messagingSenderId: "952956524987",
-  appId: "1:952956524987:web:282a8a47c1146335c68c9e",
-  measurementId: "G-JHCCL31BZF"
+  apiKey: "AIzaSyDFHI6DTyhFeWVOvJiGKB98UvdQIfgUkRU",
+  authDomain: "safraagoo.firebaseapp.com",
+  projectId: "safraagoo",
+  storageBucket: "safraagoo.firebasestorage.app",
+  messagingSenderId: "908982428349",
+  appId: "1:908982428349:web:8ed044b0c37669f23d4dd4",
+  measurementId: "G-F5KR6F0PHG"
 };
 
-// Inicializa o Firebase
+// Inicializa Firebase
 const app = initializeApp(firebaseConfig);
-
-// Inicializa o módulo de autenticação
 const auth = getAuth(app);
+const db = getFirestore(app);
 
-// Exporta para ser usado nos outros arquivos
-export { auth };
+// Exporta tudo
+export { auth, db };

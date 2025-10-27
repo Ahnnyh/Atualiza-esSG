@@ -32,7 +32,7 @@ app.use(express.static(path.join(__dirname, '../Front-End')));
 
 // 🚀 Rota inicial → sempre abre a tela de login
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../Front-End/front/tela1_login.html'));
+    res.sendFile(path.join(__dirname, '../Front-End/front/login.html'));
 });
 // --- Rotas da API ---
 

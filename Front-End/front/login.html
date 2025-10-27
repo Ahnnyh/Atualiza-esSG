@@ -1,48 +1,59 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafraGo - Login</title>
-    <link rel="stylesheet" href="style-lcs.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafraGo - Login</title>
+  <link rel="stylesheet" href="style-lcs.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
-    <div class="background"></div>
-    <div class="container">
-        <div class="logo-container">
-            <img src="../imagens/logo_safra_go.png" alt="Logo SafraGo" class="logo">
-        </div>
-        <div class="form-container">
-            <p>Digite seu Email</p>
-            <input type="email" placeholder="Email">
-            <p>Digite sua Senha</p>
-            <input type="password" placeholder="Senha">
-            <a href="#" class="forgot-password">Esqueceu a senha?</a>
-            <button class="btn enter-btn">Entrar</button>
-            <div class="divider">
-                <hr class="line">
-                <span class="or-text">ou</span>
-                <hr class="line">
-            </div>
-
-            <button class="btn social-btn google-btn">
-                <img src="../imagens/icone_google.png" alt="Google Icon" class="icon">
-                Continue com o Google
-            </button>
-
-            <button class="btn social-btn phone-btn">
-                <img src="../imagens/telefone.png" alt="Phone Icon" class="icon">
-                Continue com o Telefone
-            </button>
-
-            <p class="no-account">Não possui conta? <a href="../front/perfil.html">Cadastre-se</a></p>
-        </div>
+  <div class="background"></div>
+  <div class="container">
+    <div class="logo-container">
+      <img src="../imagens/logo_safra_go.png" alt="Logo SafraGo" class="logo">
     </div>
-    <script src="../js/main.js"></script>
-    <script src="../js/login.js"></script>
-    <script type="module" src="../js/firebaseConfig.js"></script>
-</body>
 
+    <div class="form-container">
+      <form id="formLogin">
+        <p>Digite seu Email</p>
+        <input type="email" id="email" placeholder="Email" required>
+
+        <p>Digite sua Senha</p>
+        <input type="password" id="senha" placeholder="Senha" required>
+
+        <!-- Mensagem dinâmica -->
+        <p id="msg" style="text-align:center; margin: 10px 0; color: #333;"></p>
+
+        <a href="#" class="forgot-password">Esqueceu a senha?</a>
+        <button type="submit" class="btn enter-btn">Entrar</button>
+      </form>
+
+      <div class="divider">
+        <hr class="line">
+        <span class="or-text">ou</span>
+        <hr class="line">
+      </div>
+
+      <button class="btn social-btn google-btn">
+        <img src="../imagens/icone_google.png" alt="Google Icon" class="icon">
+        Continue com o Google
+      </button>
+
+      <button class="btn social-btn phone-btn">
+        <img src="../imagens/telefone.png" alt="Phone Icon" class="icon">
+        Continue com o Telefone
+      </button>
+
+      <p class="no-account">Não possui conta? <a href="cadastro_pessoal.html">Cadastre-se</a></p>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script type="module" src="../js/firebaseConfig.js"></script>
+
+  <!-- Login -->
+  <script type="module" src="../js/login.js"></script>
+</body>
 </html>
