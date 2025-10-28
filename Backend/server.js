@@ -2,6 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const path = require('path');
 
 dotenv.config();
 
@@ -25,12 +26,19 @@ app.get('/testar-conexao', async (req, res) => {
     }
 });
 
-const path = require('path');
+
 
 // Servir arquivos estáticos da pasta Front-End
-app.use(express.static(path.join(__dirname, '../Front-End')));
+// HTML e CSS
+app.use(express.static(path.join(__dirname, '../Front-End/front')));
 
-// 🚀 Rota inicial → sempre abre a tela de login
+// JavaScript
+app.use('/js', express.static(path.join(__dirname, '../Front-End/js')));
+
+// Imagens
+app.use('/imagens', express.static(path.join(__dirname, '../Front-End/imagens')));
+
+// 🚀 Página inicial → tela de login
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../Front-End/front/login.html'));
 });
@@ -47,11 +55,8 @@ app.use('/api/produtores', require('./src/routes/produtorRoutes'));
 app.use('/api/mensagens', require('./src/routes/mensagemRoutes')); 
 app.use('/api/favoritos', require('./src/routes/favoritoRoutes'));
 
-// --- Inicialização do Servidor ---
+// --- Inicialização do servidor ---
 app.listen(PORT, () => {
     console.log(`\nServidor rodando em http://localhost:${PORT}`);
-    console.log(`--- Endpoints de Autenticação ---`);
-    console.log(`Cadastro: POST http://localhost:${PORT}/api/auth/register`);
-    console.log(`Login: POST http://localhost:${PORT}/api/auth/login`);
-    console.log(`Verificar Sessão: POST http://localhost:${PORT}/api/auth/verify-session`);
+    console.log(`Abra: http://localhost:${PORT}`);
 });
