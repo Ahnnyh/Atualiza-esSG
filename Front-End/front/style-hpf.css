@@ -23,24 +23,21 @@ body {
 
 /* ===== ESTILOS DA HOME ===== */
 /* Header da Home */
+.menu-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #401D04;
+  cursor: pointer;
+  margin-left: 15px;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 20px;
-  background: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  width: 100%;
-}
-
-.menu-btn {
-  background: none;
-  border: none;
-  font-size: 30px;
-  color: #401D04;
-  cursor: pointer;
-  min-width: 44px;
-  min-height: 44px;
+  padding: 10px 15px;
+  background-color: #fff;
 }
 
 .chat-btn {
@@ -588,4 +585,86 @@ body {
   .card img {
     height: 180px;
   }
+}
+
+/* ==== MENU LATERAL ==== */
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: -270px;
+  width: 250px;
+  height: 100%;
+  background: #fff;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+  transition: left 0.3s ease;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.side-menu.open {
+  left: 0;
+}
+
+.side-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #2a7e2a;
+  color: white;
+}
+
+.side-menu-header h2 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.side-menu-header button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 26px;
+  cursor: pointer;
+}
+
+.side-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.side-menu ul li {
+  border-bottom: 1px solid #eee;
+}
+
+.side-menu ul li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+
+.side-menu ul li a:hover {
+  background: #f2f2f2;
+}
+
+.logout-btn {
+  background: #b71c1c;
+  color: white;
+  border: none;
+  margin: 15px;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
