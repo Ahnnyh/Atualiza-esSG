@@ -5,6 +5,8 @@ import {
   updateProfile,
   sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { db } from "./firebaseConfig.js";
+import { setDoc, doc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formSenha");
@@ -40,6 +42,21 @@ document.addEventListener("DOMContentLoaded", () => {
       // 🔹 Atualiza o nome no perfil do Firebase
       await updateProfile(user, { displayName: userData.nome });
       console.log("✅ Nome salvo no perfil Firebase:", userData.nome);
+
+      await setDoc(doc(db, "usuarios", user.uid), {
+        nome: userData.nome,
+        email: userData.email,
+        cpf_cnpj: userData.cpf_cnpj || "",
+        telefone: userData.telefone || "",
+        endereco: userData.endereco || "",
+        numero: userData.numero || "",
+        cidade: userData.cidade || "",
+        cep: userData.cep || "",
+        uf: userData.uf || "",
+        bairro: userData.bairro || "",
+        complemento: userData.complemento || ""
+      });
+
 
       // 🔹 Guarda também no localStorage
       localStorage.setItem("usuarioNome", userData.nome);
