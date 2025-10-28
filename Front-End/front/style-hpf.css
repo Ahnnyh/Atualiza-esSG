@@ -1,4 +1,6 @@
-/* styles-unificados-app.css - Todos os estilos do app SafraGo */
+/* =========================================================
+   SAFRAGO - STYLE-HPF.CSS (Versão Responsiva Atualizada)
+   ========================================================= */
 
 /* ===== RESET E ESTILOS BASE ===== */
 * {
@@ -12,11 +14,11 @@ body {
   font-family: 'Segoe UI', Roboto, sans-serif;
   background: #f8f9fa;
   margin: 0 auto;
-  max-width: 500px;
   min-height: 100vh;
   position: relative;
   padding-bottom: 70px;
   width: 100%;
+  max-width: 100%; /* ← removido limite fixo */
 }
 
 /* ===== ESTILOS DA HOME ===== */
@@ -74,7 +76,7 @@ body {
   font-weight: 700;
 }
 
-/* Banner da Home */
+/* ===== Banner da Home ===== */
 .banner {
   background: url("../imagens/home.jpg") no-repeat center;
   background-size: cover;
@@ -103,9 +105,11 @@ body {
   text-align: center;
   position: relative;
   z-index: 1;
+  max-width: 90%;
+  margin: 0 auto;
 }
 
-/* Categorias da Home */
+/* ===== Categorias da Home ===== */
 .categorias-bar {
   position: absolute;
   bottom: -40px;
@@ -115,15 +119,17 @@ body {
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  flex-wrap: wrap; /* ← permite adaptação */
+  gap: 12px;
   padding: 8px 10px;
   width: 90%;
-  max-width: 450px;
+  max-width: 900px;
 }
 
 .categoria {
   text-align: center;
-  flex: 1;
+  flex: 1 1 100px;
   cursor: pointer;
   padding: 5px;
 }
@@ -134,7 +140,6 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
 }
 
 .categoria-icon {
@@ -146,11 +151,6 @@ body {
   align-items: center;
   justify-content: center;
   margin: 0 auto 8px;
-}
-
-.categoria-icon i {
-  font-size: 30px;
-  color: #401D04;
 }
 
 .categoria span {
@@ -165,7 +165,7 @@ body {
   transition: all 0.2s ease;
 }
 
-/* Seções da Home */
+/* ===== Seções da Home ===== */
 .section-title {
   font-size: 26px;
   margin: 60px 0 12px;
@@ -175,40 +175,30 @@ body {
   text-align: center;
 }
 
-.lista-vertical {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
+/* ===== Listas e Cards ===== */
 .lista-horizontal {
   display: flex;
-  gap: 12px;
-  overflow-x: auto;
+  flex-wrap: wrap; /* ← antes era só scroll */
+  justify-content: center;
+  gap: 20px;
   padding: 8px 20px 16px;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
+  overflow-x: visible;
 }
 
-.lista-horizontal::-webkit-scrollbar {
-  display: none;
-}
-
-/* Cards da Home */
 .card {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   overflow: hidden;
   min-width: 200px;
-  max-width: 240px;
+  max-width: 260px;
   position: relative;
   flex-shrink: 0;
 }
 
 .card img {
   width: 100%;
-  height: 120px;
+  height: 140px;
   object-fit: cover;
 }
 
@@ -247,20 +237,18 @@ body {
   border-radius: 6px;
 }
 
-/* ===== ESTILOS DOS PERFIS ===== */
-/* Container base para telas de perfil */
+/* ===== TELAS DE PERFIL ===== */
 .screen-container {
-  max-width: 450px;
-  margin: auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
   background-color: #fff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  position: relative;
   padding-bottom: 80px;
 }
 
-/* Header dos Perfis */
 .main-header {
   display: flex;
   justify-content: space-between;
@@ -293,16 +281,13 @@ body {
   text-decoration: none;
 }
 
-/* Conteúdo dos Perfis */
 .profile-content {
   padding: 20px;
   margin-top: 60px;
   text-align: center;
-}
-
-.profile-pic-container {
-  margin-top: 20px;
-  margin-bottom: 10px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .profile-pic {
@@ -310,7 +295,7 @@ body {
   height: 120px;
   background-color: #2a7e2a;
   border-radius: 50%;
-  margin: 0 auto;
+  margin: 20px auto 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -324,7 +309,7 @@ body {
   margin: 10px 0 30px 0;
 }
 
-/* Formulários dos Perfis */
+/* Formulário */
 .profile-form {
   text-align: left;
 }
@@ -345,7 +330,6 @@ body {
 .form-group input {
   width: 100%;
   padding: 12px;
-  box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 1em;
@@ -353,6 +337,7 @@ body {
 
 .form-row {
   display: flex;
+  flex-wrap: wrap; /* ← permite quebra */
   gap: 15px;
 }
 
@@ -364,19 +349,14 @@ body {
   flex: 0 0 80px;
 }
 
-/* Layout especial para perfil do vendedor */
 .form-row-special {
   display: flex;
   align-items: flex-end;
   gap: 15px;
+  flex-wrap: wrap;
 }
 
-.form-row-special .btn-save {
-  margin-bottom: 15px;
-  flex-shrink: 0;
-}
-
-/* Botões dos Perfis */
+/* Botões */
 .btn {
   display: block;
   padding: 14px;
@@ -441,7 +421,7 @@ body {
   color: #888;
 }
 
-/* ===== NAVBAR INFERIOR COMPARTILHADA ===== */
+/* ===== NAVBAR ===== */
 .bottom-nav {
   display: flex;
   justify-content: space-around;
@@ -449,14 +429,11 @@ body {
   position: fixed;
   bottom: 0;
   width: 100%;
-  max-width: 500px;
   background: #401D04;
   padding: 15px 0;
   z-index: 1000;
   border-top: 3px solid #2E7D32;
   box-shadow: 0 -4px 15px rgba(64, 29, 4, 0.2);
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .bottom-nav a {
@@ -469,7 +446,6 @@ body {
   transition: all 0.3s ease;
   padding: 8px 12px;
   border-radius: 12px;
-  position: relative;
   min-width: 50px;
 }
 
@@ -477,10 +453,6 @@ body {
   color: #FFFFFF;
   background: rgba(46, 125, 50, 0.3);
   transform: translateY(-2px);
-}
-
-.bottom-nav a.active {
-  color: #ffffff;
 }
 
 .bottom-nav a.active::after {
@@ -519,132 +491,47 @@ body {
   transform: translateY(-3px) scale(1.05);
 }
 
-/* Navbar alternativa para perfis */
-.bottom-nav.profile-nav {
-  background-color: #5d4037;
-  color: #fff;
-  border-top: 1px solid #ddd;
-}
-
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #ccc;
-  text-decoration: none;
-  font-size: 0.7em;
-}
-
-.nav-item i {
-  font-size: 22px;
-  margin-bottom: 4px;
-}
-
-.nav-item.active-nav {
-  transform: translateY(-15px);
-}
-
-.nav-item.active-nav i {
-  background-color: #2a7e2a;
-  color: white;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 30px;
-  border: 4px solid white;
-}
-
 /* ===== MEDIA QUERIES ===== */
 @media (max-width: 480px) {
-  body {
-    padding-bottom: 60px;
-  }
-  
-  .header {
-    padding: 20px 15px;
-  }
-  
   .banner {
     padding: 60px 20px 100px;
   }
-  
+
   .banner-text {
     font-size: 22px;
   }
-  
-  .categorias-bar {
-    width: 95%;
-    bottom: -35px;
-  }
-  
+
   .categoria-icon {
     width: 50px;
     height: 50px;
   }
-  
-  .categoria-icon i {
-    font-size: 25px;
-  }
-  
-  .categoria span {
-    font-size: 12px;
-  }
-  
+
   .section-title {
     font-size: 22px;
-    margin: 50px 0 10px;
   }
-  
-  .lista-horizontal {
-    padding: 8px 15px 16px;
-    gap: 10px;
-  }
-  
+
   .card {
     min-width: 180px;
     max-width: 200px;
   }
-  
+
   .card img {
     height: 100px;
   }
-  
-  .card-content {
-    padding: 12px;
-  }
-  
-  .nome {
-    font-size: 15px;
-  }
-  
-  .preco {
-    font-size: 13px;
-  }
-  
-  .origem {
-    font-size: 12px;
-  }
-  
-  .bottom-nav {
-    padding: 12px 0;
-  }
-  
+
   .bottom-nav i {
     font-size: 20px;
   }
-  
+
   .bottom-nav a {
     font-size: 11px;
     padding: 6px 8px;
-    min-width: 45px;
   }
-  
-  .chat-header,
-  .chat-input {
-    max-width: 100%;
+
+  .profile-pic {
+    width: 100px;
+    height: 100px;
+    font-size: 50px;
   }
 }
 
@@ -652,48 +539,53 @@ body {
   .banner-text {
     font-size: 20px;
   }
-  
-  .categorias-bar {
-    padding: 6px 8px;
-  }
-  
+
   .categoria-icon {
     width: 45px;
     height: 45px;
   }
-  
-  .categoria-icon i {
-    font-size: 22px;
-  }
-  
-  .section-title {
-    font-size: 20px;
-  }
-  
+
   .card {
     min-width: 160px;
     max-width: 180px;
   }
-  
+
   .card img {
     height: 90px;
   }
-  
-  .profile-pic {
-    width: 100px;
-    height: 100px;
-    font-size: 50px;
-  }
-  
+
   .profile-name {
     font-size: 1.5em;
   }
 }
 
-/* Para telas maiores que 500px */
-@media (min-width: 501px) {
-  body {
-    border-left: 1px solid #e0e0e0;
-    border-right: 1px solid #e0e0e0;
+@media (min-width: 768px) {
+  .banner-text {
+    font-size: 32px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .categorias-bar {
+    max-width: 900px;
+  }
+
+  .card {
+    min-width: 220px;
+    max-width: 260px;
+  }
+
+  .profile-content {
+    max-width: 700px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .banner {
+    min-height: 400px;
+  }
+
+  .card img {
+    height: 180px;
   }
 }

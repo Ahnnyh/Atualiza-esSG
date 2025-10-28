@@ -1,19 +1,16 @@
 // js/perfil.js
-import { auth } from "../js/firebaseConfig.js";
+import { auth, db } from "../js/firebaseConfig.js";
 import {
   onAuthStateChanged,
   signOut,
-  updateProfile
+  updateProfile,
+  updatePassword
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 import {
-  getFirestore,
   doc,
   getDoc,
-  setDoc,
-  updateDoc
+  setDoc
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
-const db = getFirestore();
 
 // Elementos da página
 const form = document.querySelector(".profile-form");
@@ -25,26 +22,25 @@ const enderecoInput = document.getElementById("endereco");
 const numeroInput = document.getElementById("numero");
 const cidadeInput = document.getElementById("cidade");
 const cepInput = document.getElementById("cep");
+const senhaInput = document.getElementById("senha");
 const btnSair = document.querySelector(".btn-logout");
 const profileName = document.querySelector(".profile-name");
 
-// --- Verifica se o usuário está logado ---
+// Verifica login e carrega dados
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "login.html";
     return;
   }
 
-  console.log("Usuário logado:", user.email);
   emailInput.value = user.email;
+  profileName.textContent = user.displayName || "Usuário";
 
-  // Busca dados no Firestore
   const userRef = doc(db, "usuarios", user.uid);
   const docSnap = await getDoc(userRef);
 
   if (docSnap.exists()) {
     const dados = docSnap.data();
-
     nomeInput.value = dados.nome || "";
     cpfInput.value = dados.cpf_cnpj || "";
     telefoneInput.value = dados.telefone || "";
@@ -52,14 +48,15 @@ onAuthStateChanged(auth, async (user) => {
     numeroInput.value = dados.numero || "";
     cidadeInput.value = dados.cidade || "";
     cepInput.value = dados.cep || "";
-
     profileName.textContent = dados.nome || "Usuário";
   } else {
-    console.log("⚠️ Nenhum dado encontrado para este usuário.");
-    profileName.textContent = user.displayName || user.email.split("@")[0];
+    await setDoc(userRef, {
+      nome: user.displayName || "",
+      email: user.email
+    });
   }
 
-  // Evento de salvar alterações
+  // 🔹 Salvar alterações
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -71,21 +68,30 @@ onAuthStateChanged(auth, async (user) => {
       numero: numeroInput.value.trim(),
       cidade: cidadeInput.value.trim(),
       cep: cepInput.value.trim(),
-      email: user.email
+      email: user.email // email não editável
     };
 
     try {
+      // Atualiza Firestore
       await setDoc(userRef, dadosAtualizados, { merge: true });
+      // Atualiza nome no Auth
       await updateProfile(user, { displayName: dadosAtualizados.nome });
-      alert("✅ Dados atualizados com sucesso!");
+
+      // Atualiza senha (se preenchida)
+      if (senhaInput.value.trim()) {
+        await updatePassword(user, senhaInput.value.trim());
+        alert("Senha atualizada com sucesso!");
+      }
+
       profileName.textContent = dadosAtualizados.nome || "Usuário";
+      alert("✅ Dados atualizados com sucesso!");
     } catch (error) {
       console.error("Erro ao atualizar perfil:", error);
       alert("❌ Erro ao salvar dados. Tente novamente.");
     }
   });
 
-  // Logout
+  // 🔹 Logout
   btnSair.addEventListener("click", async () => {
     await signOut(auth);
     window.location.href = "login.html";
