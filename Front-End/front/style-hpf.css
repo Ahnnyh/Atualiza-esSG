@@ -668,3 +668,171 @@ body {
   justify-content: center;
   gap: 8px;
 }
+
+
+/* ===== ESTILO DA PÁGINA DE FAVORITOS ===== */
+body {
+  background: linear-gradient(180deg, #f9f9f9 0%, #f1f8f4 100%);
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+}
+
+.main-content {
+  padding: 20px;
+  text-align: center;
+}
+
+.section-title {
+  font-size: 26px;
+  color: #2E7D32;
+  font-weight: 700;
+  margin-bottom: 25px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.5px;
+}
+
+.lista-favoritos {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+/* ===== CARD FAVORITO ===== */
+.card-fav {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  width: 90%;
+  max-width: 420px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.card-fav:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* Coração no canto superior direito */
+.card-fav::after {
+  content: "❤";
+  font-size: 20px;
+  color: #e53935;
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  opacity: 0.85;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.card-fav:hover::after {
+  transform: scale(1.15);
+  opacity: 1;
+}
+
+.card-fav img {
+  width: 120px;
+  height: 110px;
+  object-fit: cover;
+  border-right: 3px solid #f2f2f2;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+}
+
+/* ===== INFORMAÇÕES DO PRODUTO ===== */
+.info-fav {
+  padding: 14px 18px;
+  text-align: left;
+  flex-grow: 1;
+}
+
+.info-fav h3 {
+  font-size: 19px;
+  color: #401D04;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.info-fav .preco {
+  color: #2E7D32;
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 5px;
+}
+
+.info-fav .origem {
+  font-size: 13px;
+  color: #777;
+}
+
+/* Botão "Ver mais" opcional */
+.btn-detalhes {
+  display: inline-block;
+  background: linear-gradient(135deg, #43A047, #66BB6A);
+  color: #fff;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  text-decoration: none;
+  margin-top: 8px;
+  transition: background 0.3s ease;
+}
+.btn-detalhes:hover {
+  background: linear-gradient(135deg, #2E7D32, #43A047);
+}
+
+/* ===== MENSAGEM QUANDO NÃO HÁ FAVORITOS ===== */
+.sem-favoritos {
+  margin-top: 40px;
+  color: #777;
+  font-size: 16px;
+  font-style: italic;
+  background: #fff;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  max-width: 400px;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 480px) {
+  .card-fav {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .card-fav img {
+    width: 100%;
+    height: 150px;
+    border-right: none;
+    border-bottom: 3px solid #f2f2f2;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .info-fav {
+    padding: 12px 14px;
+  }
+
+  .info-fav h3 {
+    font-size: 17px;
+  }
+
+  .info-fav .preco {
+    font-size: 14px;
+  }
+
+  .info-fav .origem {
+    font-size: 12px;
+  }
+
+  .card-fav::after {
+    font-size: 18px;
+    top: 10px;
+    right: 12px;
+  }
+}
