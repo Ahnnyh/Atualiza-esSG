@@ -80,3 +80,63 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+// ==============================
+//  Login com Google 
+
+import { provider, signInWithPopup, db } from "./firebaseConfig.js";
+import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const googleLoginBtn = document.getElementById("googleLoginBtn");
+  if (!googleLoginBtn) return;
+
+  googleLoginBtn.addEventListener("click", async () => {
+    try {
+      provider.setCustomParameters({ prompt: 'select_account' });
+
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      //  Dados básicos do usuário Google
+      const userData = {
+        uid: user.uid,
+        nome: user.displayName || "",
+        email: user.email || "",
+        foto: user.photoURL || "",
+        criadoEm: new Date().toISOString(),
+      };
+
+      //  Verifica se já existe no Firestore
+      const userRef = doc(db, "usuarios", user.uid);
+      const docSnap = await getDoc(userRef);
+
+      if (docSnap.exists()) {
+        //  Já existe → login antigo
+        console.log("Usuário já cadastrado, redirecionando para welcome...");
+        localStorage.setItem("usuarioGoogle", JSON.stringify(userData));
+
+        window.location.href = "welcome.html";
+        setTimeout(() => {
+          window.location.href = "home2.html";
+        }, 3000);
+      } else {
+        //  Primeira vez → cria documento e vai para cadastro
+        await setDoc(userRef, userData);
+
+        localStorage.setItem("usuarioGoogle", JSON.stringify(userData));
+        console.log("Novo usuário Google, redirecionando para cadastro pessoal...");
+        window.location.href = "cadastro_pessoal_Google.html";
+
+        //  Depois do cadastro_pessoal.html, ao finalizar:
+        // salve `localStorage.setItem("cadastroCompleto", "true");`
+        // para que ele vá depois para welcome.html e home2.html
+      }
+    } catch (error) {
+      console.error("Erro no login com Google:", error);
+      alert("❌ Erro ao fazer login com o Google. Tente novamente.");
+    }
+  });
+});
+
+

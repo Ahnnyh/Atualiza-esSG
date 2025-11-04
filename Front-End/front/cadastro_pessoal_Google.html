@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SafraGo - Cadastro</title>
+  <title>Cadastro Google - SafraGo </title>
   <link rel="stylesheet" href="style-lcs.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
@@ -24,7 +24,7 @@
     <div class="form-card">
       <h2>Dados Pessoais</h2>
 
-      <form id="formCadastroPessoal">
+      <form id="formCadastroGoogle">
         <input type="text" id="nome" placeholder="Primeiro Nome" required>
         <input type="text" id="sobrenome" placeholder="Sobrenome">
         <input type="text" id="cpf" placeholder="CPF" required>
@@ -54,8 +54,13 @@
     </div>
   </div>
 
-  <!-- JS -->
-<script type="module" src="../js/cadastro.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+  <script type="module" src="../js/cadastroGoogle.js"></script>
+
+
 </body>
 
 </html>

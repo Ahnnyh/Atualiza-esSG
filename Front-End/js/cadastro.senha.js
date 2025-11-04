@@ -39,6 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const userCredential = await createUserWithEmailAndPassword(auth, userData.email, senha);
       const user = userCredential.user;
 
+     // 🔹 Pega o tipo de usuário salvo anteriormente (vendedor/comprador)
+      const tipoUsuario = localStorage.getItem("tipoUsuario") || "não informado";  
+
       // 🔹 Atualiza o nome no perfil do Firebase
       await updateProfile(user, { displayName: userData.nome });
       console.log("✅ Nome salvo no perfil Firebase:", userData.nome);
@@ -54,7 +57,9 @@ document.addEventListener("DOMContentLoaded", () => {
         cep: userData.cep || "",
         uf: userData.uf || "",
         bairro: userData.bairro || "",
-        complemento: userData.complemento || ""
+        complemento: userData.complemento || "",
+        tipoUsuario: tipoUsuario,
+        criadoEm: new Date().toISOString()
       });
 
 

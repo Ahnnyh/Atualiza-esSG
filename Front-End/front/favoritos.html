@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
   <link rel="stylesheet" href="style-favoritos.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
 
   <!-- Header -->
@@ -26,7 +28,8 @@
     <!-- Lista de produtos favoritados (exemplo temporário) -->
     <div class="lista-favoritos">
 
-      <div class="card-fav">
+      <div class="card-fav" data-id="tomates">
+        <button class="favoritar-btn"><i class="far fa-heart"></i></button>
         <img src="../imagens/tomates.png" alt="Tomates">
         <div class="info-fav">
           <h3>Tomates</h3>
@@ -34,6 +37,7 @@
           <p class="origem">Fazenda São José - PR</p>
         </div>
       </div>
+
 
       <div class="card-fav">
         <img src="../imagens/milho - Copia.png" alt="Milho">
@@ -56,10 +60,12 @@
   <nav class="bottom-nav">
     <a href="home.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
     <a href="../produtos/pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i><span>Pesquisar</span></a>
-    <a href="../produtos/catalogo.html" class="cart"><i class="fa-solid fa-basket-shopping"></i><span>Catálogo</span></a>
+    <a href="../produtos/catalogo.html" class="cart"><i
+        class="fa-solid fa-basket-shopping"></i><span>Catálogo</span></a>
     <a href="favoritos.html" class="active"><i class="fa-solid fa-heart"></i><span>Favoritos</span></a>
     <a href="perfil_pessoal.html"><i class="fa-solid fa-user"></i><span>Perfil</span></a>
   </nav>
 
 </body>
+
 </html>
