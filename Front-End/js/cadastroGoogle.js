@@ -16,6 +16,24 @@ const db = importedDb || getFirestore(initializeApp({
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("formCadastroGoogle");
 
+    // 🔹 Confere se o login veio do Google
+    const googleUser = JSON.parse(localStorage.getItem("usuarioGoogle"));
+    if (!googleUser) {
+        console.log("Usuário comum — não pré-preencher campos automáticos.");
+    } else {
+        // 🔹 Somente aqui entra o pré-preenchimento do nome e e-mail
+        if (googleUser.nome && document.getElementById("nome") && document.getElementById("sobrenome")) {
+            const nomeCompleto = googleUser.nome.split(" ");
+            document.getElementById("nome").value = nomeCompleto[0] || "";
+            document.getElementById("sobrenome").value = nomeCompleto.slice(1).join(" ") || "";
+        }
+
+        if (googleUser.email && document.getElementById("email")) {
+            document.getElementById("email").value = googleUser.email;
+        }
+    }
+
+
     //  Adiciona máscaras aos campos
     const cpfInput = document.getElementById("cpf");
     const telefoneInput = document.getElementById("telefone");
@@ -72,20 +90,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    //  Pré-preenche dados se o usuário veio do Google
-    const googleUser = JSON.parse(localStorage.getItem("usuarioGoogle"));
-    if (googleUser) {
-        if (googleUser.nome && document.getElementById("nome") && document.getElementById("sobrenome")) {
-            const nomeCompleto = googleUser.nome.split(" ");
-            document.getElementById("nome").value = nomeCompleto[0] || "";
-            document.getElementById("sobrenome").value = nomeCompleto.slice(1).join(" ") || "";
-        }
-
-        if (googleUser.email && document.getElementById("email")) {
-            document.getElementById("email").value = googleUser.email;
-        }
-    }
-
     //  Envio do formulário
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -108,6 +112,9 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        // 🔹 Pega o tipo de usuário salvo na escolha (vendedor ou comprador)
+        const tipoUsuario = localStorage.getItem("tipoUsuario") || "não informado";
+
         const userData = {
             nome: `${nome} ${sobrenome}`.trim(),
             cpf_cnpj: cpf,
@@ -119,7 +126,8 @@ document.addEventListener("DOMContentLoaded", () => {
             endereco,
             numero,
             bairro,
-            complemento
+            complemento,
+            tipoUsuario // 🔹 Inclui o tipo no Firestore
         };
 
         localStorage.setItem("usuarioDados", JSON.stringify(userData));

@@ -93,7 +93,13 @@ onAuthStateChanged(auth, async (user) => {
 
   // 🔹 Logout
   btnSair.addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "login.html";
-  });
+     try {
+    await signOut(auth);        // Sai da conta no Firebase
+    localStorage.clear();       // 🧹 Limpa todos os dados locais
+    window.location.href = "login.html"; // Redireciona para a tela de login
+  } catch (error) {
+    console.error("Erro ao sair:", error);
+    alert("❌ Erro ao sair. Tente novamente.");
+  }
+});
 });

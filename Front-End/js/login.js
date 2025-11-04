@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
 //  Login com Google 
 
 import { provider, signInWithPopup, db } from "./firebaseConfig.js";
-import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const googleLoginBtn = document.getElementById("googleLoginBtn");
@@ -104,7 +104,9 @@ document.addEventListener("DOMContentLoaded", () => {
         nome: user.displayName || "",
         email: user.email || "",
         foto: user.photoURL || "",
-        criadoEm: new Date().toISOString(),
+        tipoUsuario: null,
+        criadoEm: serverTimestamp(),
+
       };
 
       //  Verifica se já existe no Firestore
@@ -126,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         localStorage.setItem("usuarioGoogle", JSON.stringify(userData));
         console.log("Novo usuário Google, redirecionando para cadastro pessoal...");
-        window.location.href = "cadastro_pessoal_Google.html";
+        window.location.href = "perfil.html";
 
         //  Depois do cadastro_pessoal.html, ao finalizar:
         // salve `localStorage.setItem("cadastroCompleto", "true");`
