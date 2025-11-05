@@ -879,3 +879,30 @@ body {
   color: #e63946;
   transform: scale(1.3);
 }
+
+/* Botão excluir conta */
+.excluir-conta {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.btn-delete-account {
+  background-color: #c9302c;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-delete-account:hover {
+  background-color: #a92825;
+  transform: scale(1.03);
+}
+
+.btn-delete-account:active {
+  transform: scale(0.97);
+}

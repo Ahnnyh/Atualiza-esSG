@@ -4,12 +4,12 @@ import {
   onAuthStateChanged,
   signOut,
   updateProfile,
-  updatePassword
+  updatePassword, deleteUser 
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 import {
   doc,
   getDoc,
-  setDoc
+  setDoc, deleteDoc
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 // Elementos da página
@@ -102,4 +102,45 @@ onAuthStateChanged(auth, async (user) => {
     alert("❌ Erro ao sair. Tente novamente.");
   }
 });
+});
+// 🔹 Excluir conta
+const btnExcluirConta = document.querySelector(".btn-delete-account");
+
+btnExcluirConta.addEventListener("click", async () => {
+  const confirmar = confirm("⚠️ Tem certeza que deseja excluir sua conta? Essa ação não pode ser desfeita!");
+
+  if (!confirmar) return;
+
+  try {
+    const user = auth.currentUser;
+
+    if (!user) {
+      alert("Nenhum usuário logado no momento.");
+      return;
+    }
+
+    // 1️⃣ Excluir documento do Firestore
+    await deleteDoc(doc(db, "usuarios", user.uid));
+
+    // 2️⃣ Excluir usuário do Authentication
+    await deleteUser(user);
+
+    // 3️⃣ Limpar localStorage
+    localStorage.clear();
+
+    // 4️⃣ Redirecionar
+    alert("Conta excluída com sucesso! Esperamos te ver novamente ❤️");
+    window.location.href = "login.html";
+
+  } catch (error) {
+    console.error("Erro ao excluir conta:", error);
+
+    if (error.code === "auth/requires-recent-login") {
+      alert("⚠️ Por segurança, faça login novamente para excluir sua conta.");
+      await signOut(auth);
+      window.location.href = "login.html";
+    } else {
+      alert("❌ Ocorreu um erro ao tentar excluir sua conta. Tente novamente mais tarde.");
+    }
+  }
 });
