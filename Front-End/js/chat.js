@@ -1,56 +1,36 @@
-import { getSession } from "./firebaseConfig.js";
+const API_URL = "http://localhost:3000/chat";
 
-const API_URL = "http://localhost/Backend/src/api/chat.php";
+// Carregar mensagens
+export async function carregarMensagens(conversaId, token) {
+    const res = await fetch(`${API_URL}/mensagem/${conversaId}`, {
+        headers: { "Authorization": "Bearer " + token }
+    });
 
-async function api(action, data = {}, method = "POST") {
-    const session = await getSession();
-    if (!session) {
-        alert("Faça login!");
-        return;
+    if (!res.ok) {
+        console.error("Erro ao carregar mensagens:", res.status);
+        return [];
     }
 
-    let options = {
-        method,
+    const data = await res.json();
+    return data.messages;
+}
+
+// Enviar mensagem
+export async function enviarMensagem(conversaId, destUid, texto, token) {
+    const res = await fetch(`${API_URL}/mensagem`, {
+        method: "POST",
         headers: {
-            "Authorization": "Bearer " + session.token,
-            "Content-Type": "application/x-www-form-urlencoded"
-        }
-    };
-
-    if (method === "POST")
-        options.body = new URLSearchParams({ action, ...data });
-
-    const res = await fetch(API_URL + (method === "GET" ? `?action=${action}&` + new URLSearchParams(data) : ""), options);
-    return res.json();
-}
-
-// LISTAR CONVERSAS (conversas.html)
-export async function carregarConversas() {
-    const r = await api("list_conversations", {}, "GET");
-    return r.conversations;
-}
-
-// ABRIR CONVERSA (chat.html)
-export async function carregarMensagens(conversaId) {
-    const r = await api("get_messages", { conversa_id: conversaId }, "GET");
-    return r.messages;
-}
-
-// ENVIAR MENSAGEM
-export async function enviarMensagem(conversaId, destUid, texto) {
-    return api("send_message", {
-        conversa_id: conversaId,
-        destinatario_uid: destUid,
-        mensagem: texto
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+            conversa_id: conversaId,
+            destinatario_uid: destUid,
+            mensagem: texto
+        })
     });
-}
 
-// CRIAR CONVERSA A PARTIR DE UM PRODUTO (catalogo.html)
-export async function iniciarConversa(compradorUid, vendedorUid, produtoId) {
-    const r = await api("get_or_create_conversation", {
-        comprador_uid: compradorUid,
-        vendedor_uid: vendedorUid,
-        produto_id: produtoId
-    });
-    return r.conversation_id;
+    if (!res.ok) {
+        console.error("Erro ao enviar mensagem:", res.status);
+    }
 }

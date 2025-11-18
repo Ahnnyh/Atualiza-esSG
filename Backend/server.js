@@ -26,28 +26,18 @@ app.get('/testar-conexao', async (req, res) => {
     }
 });
 
-
-
-// Servir arquivos estáticos da pasta Front-End
-// HTML e CSS
+// Servir arquivos estáticos
 app.use(express.static(path.join(__dirname, '../Front-End/front')));
-
-// JavaScript
 app.use('/js', express.static(path.join(__dirname, '../Front-End/js')));
-
-// Imagens
 app.use('/imagens', express.static(path.join(__dirname, '../Front-End/imagens')));
 
-// 🚀 Página inicial → tela de login
+// Página inicial → login
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../Front-End/front/login.html'));
 });
+
 // --- Rotas da API ---
-
-// Rota de Autenticação (CADASTRO E LOGIN )
 app.use('/api/auth', require('./src/routes/authRoutes'));
-
-// Demais rotas
 app.use('/api/usuarios', require('./src/routes/usuarioRoutes')); 
 app.use('/api/produtos', require('./src/routes/produtoRoutes')); 
 app.use('/api/compradores', require('./src/routes/compradorRoutes')); 
@@ -55,8 +45,11 @@ app.use('/api/produtores', require('./src/routes/produtorRoutes'));
 app.use('/api/mensagens', require('./src/routes/mensagemRoutes')); 
 app.use('/api/favoritos', require('./src/routes/favoritoRoutes'));
 
+// --- Rotas do chat ---
+const chatRoutes = require("./src/routes/chatRoutes");
+app.use("/chat", chatRoutes);
+
 // --- Inicialização do servidor ---
 app.listen(PORT, () => {
-    console.log(`\nServidor rodando em http://localhost:${PORT}`);
-    console.log(`Abra: http://localhost:${PORT}`);
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
 });

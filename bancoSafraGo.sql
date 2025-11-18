@@ -48,14 +48,31 @@ CREATE TABLE favorito (
     -- Garante que um UID (usuário) só pode favoritar o mesmo produto uma vez
     UNIQUE KEY (fk_usuario, fk_produto) 
 ) ENGINE=InnoDB;
+
 -- Tabela de Mensagens
--- fk_usuario_remetente e fk_usuario_destinatario (VARCHAR) armazenam UIDs do Firebase.
-CREATE TABLE mensagem (
-    id_mensagem INTEGER NOT NULL AUTO_INCREMENT,
-    conteudo TEXT NOT NULL,
-    data_envio DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    fk_usuario_remetente VARCHAR(128) NOT NULL, -- UID de quem enviou
-    fk_usuario_destinatario VARCHAR(128) NOT NULL, -- UID de quem recebeu
-    PRIMARY KEY(id_mensagem)
-    -- NOTA: Sem Chaves Estrangeiras (FOREIGN KEY) para usuários.
-) ENGINE=InnoDB;
+
+CREATE TABLE mensagens (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    conversa_id INT NOT NULL,
+    remetente_uid VARCHAR(128) NOT NULL,
+    destinatario_uid VARCHAR(128) NOT NULL,
+    mensagem TEXT,
+    imagem VARCHAR(255),
+    enviada_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+    lida TINYINT(1) DEFAULT 0
+);
+
+CREATE TABLE conversas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    comprador_uid VARCHAR(128) NOT NULL, 
+    vendedor_uid VARCHAR(128) NOT NULL,
+    produto_id INT NOT NULL,
+    ultima_msg TEXT,
+    atualizada_em DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE usuarios_online (
+    user_uid VARCHAR(128) PRIMARY KEY,
+    ultimo_ping DATETIME NOT NULL
+);
+

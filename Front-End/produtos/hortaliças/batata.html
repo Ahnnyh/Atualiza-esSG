@@ -83,23 +83,5 @@
     <a href="../favoritos.html"><i class="fa-solid fa-heart"></i><span>Favoritos</span></a>
     <a href="../../front/perfil.html"><i class="fa-solid fa-user"></i><span>Perfil</span></a>
   </nav>
-  <script type="module">
-    import { iniciarConversa } from "../../js/chat.js";
-    import { getSession } from "../../js/firebaseConfig.js";
-  
-    document.querySelector(".btn-interesse").addEventListener("click", async () => {
-  
-      const vendedorUid = document.querySelector(".btn-interesse").dataset.vendedor;
-      const produtoId   = document.querySelector(".btn-interesse").dataset.produto;
-  
-      const sess = await getSession();
-  
-      // cria conversa no backend
-      const conversaId = await iniciarConversa(sess.uid, vendedorUid, produtoId);
-  
-      // abre chat corretamente
-      window.location.href = `../../front/chat.html?id=${conversaId}&dest=${vendedorUid}`;
-    });
-  </script>
 </body>
 </html>
