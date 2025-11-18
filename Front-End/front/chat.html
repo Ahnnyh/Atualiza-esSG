@@ -8,22 +8,26 @@
   <link rel="stylesheet" href="chat.css">
 </head>
 <body>
+
   <!-- Cabeçalho -->
   <header class="chat-header">
-    <button class="back-btn">←</button>
+    <button class="back-btn" onclick="history.back()">←</button>
     <img src="../imagens/agricutor.jpg" alt="Foto do Agricultor" class="user-icon">
-    <h2>Agricultor 1</h2>
+    <h2 id="titulo-conversa">Chat</h2>
   </header>
 
-  <!-- Área do chat (fundo) -->
-  <main class="chat-container"></main>
+  <!-- Área do chat -->
+  <main class="chat-container" id="mensagens"></main>
 
   <!-- Input fixo -->
-<footer class="chat-input">
-  <input type="text" placeholder="Digite sua mensagem...">
-  <button class="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
-</footer>
+  <footer class="chat-input">
+    <input id="msg" type="text" placeholder="Digite sua mensagem...">
+    <button id="sendBtn" class="send-btn">
+      <i class="fa-solid fa-paper-plane"></i>
+    </button>
+  </footer>
 
+  <!-- Menu inferior -->
   <nav class="bottom-nav">
     <a href="home.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
     <a href="../produtos/pesquisa.html"><i class="fa-solid fa-magnifying-glass"></i><span>Pesquisar</span></a>
@@ -31,6 +35,70 @@
     <a href="../favoritos.html"><i class="fa-solid fa-heart"></i><span>Favoritos</span></a>
     <a href="perfil_pessoal.html"><i class="fa-solid fa-user"></i><span>Perfil</span></a>
   </nav>
-<script src="../js/main.js"></script>
+
+  <!-- IMPORTANTE: NÃO carregar main.js aqui -->
+  <script type="module">
+
+    import { carregarMensagens, enviarMensagem } from "../js/chat.js";
+    import { getSession } from "../js/firebaseConfig.js";
+
+    // -----------------------------
+    // 1. Capturar parâmetros da URL
+    // -----------------------------
+    const params = new URLSearchParams(location.search);
+    const conversaId = params.get("id");
+    const destUid   = params.get("dest");
+
+    if (!conversaId || !destUid) {
+      document.body.innerHTML = "<h2 style='padding:20px;'>Erro: Abra esta página pelas Conversas ou Catálogo.</h2>";
+      throw new Error("ID da conversa ou destinatário ausente.");
+    }
+
+    // -----------------------------
+    // 2. Atualizar mensagens
+    // -----------------------------
+    const box = document.getElementById("mensagens");
+
+    async function atualizar() {
+      const msgs = await carregarMensagens(conversaId);
+      const session = await getSession();   // ✔ AGORA É VÁLIDO
+      const meuUid = session.uid;
+
+      box.innerHTML = "";
+
+      msgs.forEach(m => {
+          const div = document.createElement("div");
+          div.classList.add("msg");
+
+          const nome = m.remetente_uid === meuUid ? "Você" : m.remetente_uid;
+
+          div.innerHTML = `
+            <p><b>${nome}:</b> ${m.mensagem}</p>
+          `;
+
+          box.appendChild(div);
+    });
+
+    box.scrollTop = box.scrollHeight;
+  }
+
+    atualizar();
+    setInterval(atualizar, 1500);
+
+    // -----------------------------
+    // 3. Enviar mensagem
+    // -----------------------------
+    document.getElementById("sendBtn").onclick = async () => {
+      const input = document.getElementById("msg");
+      const texto = input.value.trim();
+      if (!texto) return;
+
+      await enviarMensagem(conversaId, destUid, texto);
+      input.value = "";
+      atualizar();
+    };
+
+  </script>
+
 </body>
 </html>

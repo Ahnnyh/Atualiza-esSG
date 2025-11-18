@@ -47,5 +47,16 @@
     <a href="../front/perfil.html"><i class="fa-solid fa-user"></i><span>Perfil</span></a>
   </nav>
   <script src="../js/filtros.js"></script>
+  <script type="module">
+    import { iniciarConversa } from "../js/chat.js";
+    import { getSession } from "../js/firebaseConfig.js";
+    
+    async function abrirChat(vendedorUid, produtoId) {
+        const sess = await getSession();
+        const conversaId = await iniciarConversa(sess.uid, vendedorUid, produtoId);
+        window.location = "chat.html?id=" + conversaId;
+    }
+    </script>
+    
 </body>
 </html>
