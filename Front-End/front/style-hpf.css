@@ -191,6 +191,7 @@ body {
   max-width: 260px;
   position: relative;
   flex-shrink: 0;
+  text-decoration: none;
 }
 
 .card img {

@@ -1,4 +1,4 @@
-/* Reset */
+/* ===== RESET ===== */
 * {
   margin: 0;
   padding: 0;
@@ -6,34 +6,38 @@
   font-family: Arial, sans-serif;
 }
 
-body {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  background: #ffffff;
+/* ===== BODY COM O FUNDO ===== */
+html, body {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;    /* <-- A página inteira pode rolar */
+  background: url("../imagens/fundochat.png") repeat; /* textura global */
+  background-size: 250px;  /* tamanho do padrão (ajustável) */
 }
 
-/* ===== Cabeçalho ===== */
+/* ===== HEADER FIXO ===== */
 .chat-header {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-  padding: 10px;
-  background: #ffffff; /* branco */
-  color: #000;
-  border-bottom: 1px solid #ddd;
   position: fixed;
   top: 0;
+  left: 0;
   width: 100%;
+  height: 60px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
   z-index: 10;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
 }
 
 .back-btn {
-  background: #4CAF50; /* verde */
+  background: #4CAF50;
   border: none;
   color: white;
-  font-size: 20px;
+  font-size: 18px;
   border-radius: 50%;
   width: 35px;
   height: 35px;
@@ -47,48 +51,45 @@ body {
   object-fit: cover;
 }
 
-.chat-header h2 {
-  font-size: 16px;
-  font-weight: normal;
-}
-
-/* ===== Área do chat ===== */
+/* ===== ÁREA DO CHAT ===== */
 .chat-container {
-  flex: 1;
-  margin-top: 60px;
-  margin-bottom: 60px;
-  background: url("img/fundochat.png") repeat; /* use a imagem de textura bege com legumes */
-  background-size: contain;
-  overflow-y: auto;
+  padding: 15px;
+  margin-top: 60px;   /* abaixo do header */
+  margin-bottom: 120px; /* acima do input + navbar */
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  /* NADA DE HEIGHT */
+  /* NADA DE CALC */
+  /* NADA DE OVERFLOW LIMITANDO A ALTURA */
 }
 
-/* ===== Input fixo ===== */
-/* ===== Caixa flutuante ===== */
+/* ===== INPUT FIXO ===== */
 .chat-input {
+  position: fixed;
+  bottom: 100px;  /* acima da navbar */
+  width: 100%;
   display: flex;
-  align-items: center;
   justify-content: center;
   gap: 10px;
-  position: fixed;
-  bottom: 70px; /* flutua acima da navbar */
-  width: 100%;
-  background: transparent; /* sem fundo */
+  padding: 5px 15px;
+  z-index: 50;
 }
 
 .chat-input input {
   flex: 1;
-  max-width: 80%; /* não ocupar a tela toda */
-  padding: 15px 18px;
+  padding: 14px 18px;
   border-radius: 25px;
   border: none;
   outline: none;
   background: #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2); /* sombra para destacar */
-  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 .send-btn {
-  background: #4CAF50; /* verde */
+  background: #4CAF50;
   border: none;
   color: white;
   font-size: 18px;
@@ -98,7 +99,7 @@ body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
-/* Navbar inferior */
+/* ===== NAVBAR ===== */
 .bottom-nav {
   display: flex;
   justify-content: space-around;
@@ -123,17 +124,13 @@ body {
   transition: all 0.3s ease;
   padding: 8px 12px;
   border-radius: 12px;
-  position: relative;
+  min-width: 50px;
 }
 
 .bottom-nav a:hover {
   color: #FFFFFF;
   background: rgba(46, 125, 50, 0.3);
   transform: translateY(-2px);
-}
-
-.bottom-nav a.active {
-  color: #ffffff;
 }
 
 .bottom-nav a.active::after {
@@ -172,39 +169,22 @@ body {
   transform: translateY(-3px) scale(1.05);
 }
 
-@media (max-width: 480px) {
- .bottom-nav {
-    padding: 12px 0;
-  }
-  
-  .bottom-nav i {
-    font-size: 20px;
-  }
-  
-  .bottom-nav a {
-    font-size: 11px;
-    padding: 6px 8px;
-  }
-}
-
-.chat-container {
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  height: calc(100vh - 160px); /* ajusta para caber entre header + input + nav */
-  overflow-y: auto;
-}
-
-/* Mensagem base */
+/* ===== MENSAGENS ===== */
 .mensagem {
   max-width: 70%;
-  padding: 8px;
   display: flex;
   flex-direction: column;
+  padding: 5px;
 }
 
-/* Balões */
+.mensagem.me {
+  align-self: flex-end;
+}
+
+.mensagem.other {
+  align-self: flex-start;
+}
+
 .bubble {
   padding: 10px 14px;
   border-radius: 12px;
@@ -213,20 +193,10 @@ body {
   word-wrap: break-word;
 }
 
-/* Usuário (lado direito) */
-.mensagem.me {
-  align-self: flex-end;
-}
-
 .mensagem.me .bubble {
   background: #2E7D32;
   color: white;
   border-bottom-right-radius: 0;
-}
-
-/* Agricultor/Outro (lado esquerdo) */
-.mensagem.other {
-  align-self: flex-start;
 }
 
 .mensagem.other .bubble {
@@ -235,10 +205,9 @@ body {
   border-bottom-left-radius: 0;
 }
 
-/* Hora da mensagem */
 .hora {
   font-size: 11px;
   color: #555;
-  margin-top: 3px;
+  margin-top: 4px;
   align-self: flex-end;
 }
