@@ -102,8 +102,8 @@
         <p class="nome">Tomates</p>
 
         <button class="btn-fav" data-id="tomate-id">
-            <i class="fa-regular fa-heart"></i>
-          </button>
+          <i class="fa-regular fa-heart"></i>
+        </button>
 
         <p class="preco">A partir de R$ 80,00 / caixa</p>
         <p class="origem">Fazenda São José - PR</p>
@@ -116,8 +116,8 @@
         <p class="nome">Banana</p>
 
         <button class="btn-fav" data-id="banana-id">
-            <i class="fa-regular fa-heart"></i>
-          </button>
+          <i class="fa-regular fa-heart"></i>
+        </button>
 
         <p class="preco">A partir de R$ 4,50 / Kg</p>
         <p class="origem">Fazenda Tropical - SP</p>
@@ -134,9 +134,9 @@
       <div class="card-content">
         <p class="nome">Maçã</p>
 
-<button class="btn-fav" data-id="maca-id">
-            <i class="fa-regular fa-heart"></i>
-          </button>
+        <button class="btn-fav" data-id="maca-id">
+          <i class="fa-regular fa-heart"></i>
+        </button>
 
 
         <p class="preco">R$ 7,99 / Kg</p>
@@ -151,8 +151,8 @@
         <p class="nome">Uvas</p>
 
         <button class="btn-fav" data-id="uvas-id">
-            <i class="fa-regular fa-heart"></i>
-          </button>
+          <i class="fa-regular fa-heart"></i>
+        </button>
 
 
         <p class="preco">R$ 9,99 / Kg</p>
@@ -167,8 +167,8 @@
         <p class="nome">Laranja</p>
 
         <button class="btn-fav" data-id="laranja-id">
-            <i class="fa-regular fa-heart"></i>
-          </button>
+          <i class="fa-regular fa-heart"></i>
+        </button>
 
 
         <p class="preco">R$ 3,99 / Kg</p>
@@ -193,12 +193,27 @@
     <a href="#" id="btnPerfil"><i class="fa-solid fa-user"></i><span>Perfil</span></a>
   </nav>
 
-  <script src="../js/main.js"></script>
-  <script type="module" src="../js/firebaseConfig.js"></script>
-  <script type="module" src="../js/home-auth.js"></script>
-  <script type="module" src="../js/perfil_redireciona.js"></script>
-  <script type="module" src="../js/favoritos.js"></script>
-  <script type="module" src="../js/fav-integration.js"></script>
+  <!-- Firebase primeiro -->
+<script type="module" src="../js/firebaseConfig.js"></script>
+
+<!-- Depois: autenticação -->
+<script type="module" src="../js/home-auth.js"></script>
+
+<!-- Depois: redirecionamento -->
+<script type="module" src="../js/perfil_redireciona.js"></script>
+
+<!-- DEPOIS: controle que usa auth -->
+<script type="module" src="../js/controle-favoritos.js"></script>
+
+<!-- DEPOIS: favoritos -->
+<script type="module" src="../js/favoritos.js"></script>
+
+<!-- DEPOIS: integração dos botões -->
+<script type="module" src="../js/fav-integration.js"></script>
+
+<!-- MAIN sempre por último -->
+<script src="../js/main.js"></script>
+
 
 
 </body>

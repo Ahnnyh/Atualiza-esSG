@@ -1,6 +1,16 @@
 // Front-End/js/fav-integration.js
 // Integração dos botões .btn-fav com o sistema de favoritos
 
+import { isVendedor } from "./controle-favoritos.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (isVendedor) {
+    console.log("Vendedor detectado — escondendo favoritos.");
+    document.querySelectorAll(".btn-fav").forEach(btn => btn.remove());
+    return;
+  }
+});
+
 import { 
   adicionarFavorito, 
   removerFavorito, 
