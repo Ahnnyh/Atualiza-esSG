@@ -26,14 +26,39 @@ class CatalogoManager {
     }
 
     cacheProducts() {
-        this.products = Array.from(this.elements.productCards).map(card => ({
-            element: card,
-            name: card.querySelector('h3').textContent.toLowerCase(),
-            category: card.dataset.category,
-            producer: card.querySelector('.producer').textContent.toLowerCase(),
-            price: this.extractPrice(card)
-        }));
-    }
+    // 1. Carrega produtos
+    this.products = Array.from(this.elements.productCards).map(card => ({
+        element: card,
+        name: card.querySelector('h3').textContent.toLowerCase(),
+        category: card.dataset.category,
+        producer: card.querySelector('.producer').textContent.toLowerCase(),
+        price: this.extractPrice(card)
+    }));
+
+    // 2. ADICIONA O BOTÃO DE FAVORITOS EM CADA CARD
+    this.products.forEach(produto => {
+        // Evitar inserir botão duplicado
+        if (produto.element.querySelector('.btn-fav')) return;
+
+        const btnFav = document.createElement('button');
+        btnFav.className = 'btn-fav';
+        btnFav.dataset.id = produto.element.dataset.id || produto.name;
+        btnFav.style.border = 'none';
+        btnFav.style.background = 'transparent';
+        btnFav.style.cursor = 'pointer';
+        btnFav.style.position = 'absolute';
+        btnFav.style.top = '10px';
+        btnFav.style.right = '10px';
+        btnFav.innerHTML = '<i class="fa-regular fa-heart"></i>';
+
+        // Garantir posicionamento
+        produto.element.style.position = 'relative';
+
+        // Inserir no card
+        produto.element.appendChild(btnFav);
+    });
+}
+
 
     extractPrice(card) {
         const priceText = card.querySelector('.packaging-price')?.textContent || '';

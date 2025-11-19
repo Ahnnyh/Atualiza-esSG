@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SafraGo - Favoritos</title>
   <link rel="stylesheet" href="style-hpf.css">
-  <link rel="stylesheet" href="style-favoritos.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -25,35 +24,9 @@
   <main class="main-content">
     <h2 class="section-title">Meus Favoritos</h2>
 
-    <!-- Lista de produtos favoritados (exemplo temporário) -->
-    <div class="lista-favoritos">
-
-      <div class="card-fav" data-id="tomates">
-        <button class="favoritar-btn"><i class="far fa-heart"></i></button>
-        <img src="../imagens/tomates.png" alt="Tomates">
-        <div class="info-fav">
-          <h3>Tomates</h3>
-          <p class="preco">R$ 8,00 / kg</p>
-          <p class="origem">Fazenda São José - PR</p>
-        </div>
-      </div>
+    <div id="favoritosContainer" class="lista-favoritos"></div>
 
 
-      <div class="card-fav">
-        <img src="../imagens/milho - Copia.png" alt="Milho">
-        <div class="info-fav">
-          <h3>Milho</h3>
-          <p class="preco">R$ 80,00 / saco</p>
-          <p class="origem">Fazenda Boa Esperança - SP</p>
-        </div>
-      </div>
-
-      <!-- Mensagem que aparecerá se o usuário não tiver favoritos -->
-      <div class="sem-favoritos">
-        <p>Você ainda não curtiu nenhum produto.</p>
-      </div>
-
-    </div>
   </main>
 
   <!-- Footer -->
@@ -65,6 +38,10 @@
     <a href="favoritos.html" class="active"><i class="fa-solid fa-heart"></i><span>Favoritos</span></a>
     <a href="perfil_pessoal.html"><i class="fa-solid fa-user"></i><span>Perfil</span></a>
   </nav>
+
+  <script type="module" src="../js/firebaseConfig.js"></script>
+  <script type="module" src="../js/favoritos.js"></script>
+  <script type="module" src="../js/fav-integration.js"></script>
 
 </body>
 
